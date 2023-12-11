@@ -11,7 +11,6 @@ import 'utils/themes.dart';
 
 // import 'package:hive/hive.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
@@ -55,9 +54,8 @@ Route<dynamic> _router(RouteSettings settings) {
         actions: [
           Switch(
             value: Get.isDarkMode,
-            onChanged: (bool value) {
-              Get.changeTheme(Get.isDarkMode ? lightTheme : darkTheme);
-            },
+            onChanged: (bool value) =>
+                Get.changeTheme(Get.isDarkMode ? lightTheme : darkTheme),
           ),
         ],
       ),
