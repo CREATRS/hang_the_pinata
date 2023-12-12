@@ -1,23 +1,25 @@
 import 'package:dio/dio.dart';
 
+import 'package:hang_the_pinata/utils/constants.dart';
+
 class StaticData {
-  static Response get wordpacks =>
-      Response(requestOptions: RequestOptions(), data: _wordpacks);
+  static Response<Map<String, dynamic>> get wordPacks =>
+      Response(requestOptions: RequestOptions(), data: _wordPacks);
 }
 
-Map<String, dynamic> _wordpacks = {
-  'wordpacks': [
+Map<String, dynamic> _wordPacks = {
+  StorageKeys.wordPacks: [
     {
       'id': 1,
       'name': 'Animals',
       'rating': 3.8,
       'image': 'assets/wordpacks/animals.png',
       'words': [
-        {'en': 'lion', 'es': 'león', 'fr': 'lion', 'gr': 'Löwe'},
-        {'en': 'elephant', 'es': 'elefante', 'fr': 'éléphant', 'gr': 'Elefant'},
-        {'en': 'giraffe', 'es': 'jirafa', 'fr': 'girafe', 'gr': 'Giraffe'},
-        {'en': 'zebra', 'es': 'cebra', 'fr': 'zèbre', 'gr': 'Zebra'},
-        {'en': 'penguin', 'es': 'pingüino', 'fr': 'pingouin', 'gr': 'Pinguin'},
+        {'en': 'lion', 'es': 'león', 'fr': 'lion', 'gr': 'löwe'},
+        {'en': 'elephant', 'es': 'elefante', 'fr': 'éléphant', 'gr': 'elefant'},
+        {'en': 'giraffe', 'es': 'jirafa', 'fr': 'girafe', 'gr': 'giraffe'},
+        {'en': 'zebra', 'es': 'cebra', 'fr': 'zèbre', 'gr': 'zebra'},
+        {'en': 'penguin', 'es': 'pingüino', 'fr': 'pingouin', 'gr': 'pinguin'},
       ],
     },
     {
@@ -39,11 +41,11 @@ Map<String, dynamic> _wordpacks = {
       'rating': 4.8,
       'image': 'assets/wordpacks/fruits.png',
       'words': [
-        {'en': 'apple', 'es': 'manzana', 'fr': 'pomme', 'gr': 'Apfel'},
-        {'en': 'banana', 'es': 'plátano', 'fr': 'banane', 'gr': 'Banane'},
-        {'en': 'grape', 'es': 'uva', 'fr': 'raisin', 'gr': 'Traube'},
-        {'en': 'strawberry', 'es': 'fresa', 'fr': 'fraise', 'gr': 'Erdbeere'},
-        {'en': 'orange', 'es': 'naranja', 'fr': 'orange', 'gr': 'Orange'},
+        {'en': 'apple', 'es': 'manzana', 'fr': 'pomme', 'gr': 'apfel'},
+        {'en': 'banana', 'es': 'plátano', 'fr': 'banane', 'gr': 'banane'},
+        {'en': 'grape', 'es': 'uva', 'fr': 'raisin', 'gr': 'traube'},
+        {'en': 'strawberry', 'es': 'fresa', 'fr': 'fraise', 'gr': 'erdbeere'},
+        {'en': 'orange', 'es': 'naranja', 'fr': 'orange', 'gr': 'orange'},
       ],
     },
     {
@@ -73,7 +75,7 @@ Map<String, dynamic> _wordpacks = {
           'fr': 'Allemagne',
           'gr': 'Deutschland',
         },
-        {'en': 'Spain', 'es': 'España', 'fr': 'Espagne', 'gr': 'Spanien'},
+        {'en': 'Spain', 'es': 'España', 'fr': 'Espagne', 'gr': 'spanien'},
         {
           'en': 'England',
           'es': 'Inglaterra',

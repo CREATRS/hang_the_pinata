@@ -6,26 +6,36 @@ import 'package:hang_the_pinata/utils/constants.dart';
 import 'package:hang_the_pinata/widgets/components/cached_or_asset_image.dart';
 import 'package:hang_the_pinata/widgets/components/selectable_item.dart';
 
-class SelectWordpack extends StatelessWidget {
+class SelectWordpack extends StatefulWidget {
   const SelectWordpack({super.key});
 
   @override
+  State<SelectWordpack> createState() => _SelectWordpackState();
+}
+
+class _SelectWordpackState extends State<SelectWordpack> {
+  WordPack? selectedWordpack;
+  bool loaded = false;
+
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Api.getWordpacks(),
+      return FutureBuilder(
+        future: loaded ? null : Api.getWordPacks(),
       builder: (context, AsyncSnapshot<List<WordPack>> snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-        List<WordPack> wordpacks = snapshot.data as List<WordPack>;
+          List<WordPack> wordPacks = snapshot.data as List<WordPack>;
+          loaded = true;
         return ListView.builder(
-          itemCount: wordpacks.length,
+            itemCount: wordPacks.length,
           itemBuilder: (context, index) {
-            WordPack wordpack = wordpacks[index];
+              WordPack wordPack = wordPacks[index];
             return SelectableItem(
-              text: wordpack.name,
+                text: wordPack.name,
+                subtitle: '${wordPack.words.length} words',
               color: AppColors.orange,
-                leading: CachedOrAssetImage(wordpack.image),
+                leading: CachedOrAssetImage(wordPack.image),
                 alwaysShowTrailing: true,
             );
           },

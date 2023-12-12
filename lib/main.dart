@@ -9,14 +9,9 @@ import 'screens/home.dart';
 import 'utils/constants.dart';
 import 'utils/themes.dart';
 
-// import 'package:hive/hive.dart';
-
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  // String dbPath = await getDbPath();
-  // Hive.init(dbPath);
-  await Hive.openBox('wordpacks');
+  await Hive.openBox(StorageKeys.wordPacks);
   runApp(const MyApp());
 }
 

@@ -8,6 +8,10 @@ class Routes {
   // static const String result = '/result';
 }
 
+class StorageKeys {
+  static const String wordPacks = 'word_packs';
+}
+
 // Style
 class AppColors {
   static const Color orange = Color(0xFFD96818);

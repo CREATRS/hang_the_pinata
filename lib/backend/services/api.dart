@@ -1,11 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 
-import 'package:hang_the_pinata/backend/data/wordpacks.dart';
+import 'package:hang_the_pinata/backend/data/word_packs.dart';
 import 'package:hang_the_pinata/backend/models/wordpack.dart';
 import 'package:hang_the_pinata/backend/secrets.dart';
+import 'package:hang_the_pinata/utils/constants.dart';
 
 Dio dio = Dio(
   BaseOptions(
@@ -18,26 +20,46 @@ Dio dio = Dio(
 );
 
 class Api {
-  static Future<List<WordPack>> getWordpacks() async {
-    Response response = StaticData.wordpacks;
-    Box box = Hive.box('wordpacks');
-    try {
-      // Response webResponse = await dio.get('wordpacks/');
-      // List<Map> wr = webResponse.data['wordpacks'] as List<Map>;
-      // print(webResponse.data['wordpacks'].runtimeType as List<Map>);
-      // print(response.data['wordpacks'].runtimeType);
-      // response.data['wordpacks'] += wr;
-      // response.data['wordpacks'].addAll(wr);
-      box.put('wordpacks', jsonEncode(response.data));
-    } on DioException catch (_) {
-      String? wordpacks = box.get('wordpacks');
+  static Future<List<WordPack>> getWordPacks() async {
+    List<Map<String, dynamic>> data = List<Map<String, dynamic>>.from(
+      StaticData.wordPacks.data![StorageKeys.wordPacks],
+    );
+    Box box = Hive.box(StorageKeys.wordPacks);
+
+    if (await _hasInternet()) {
+      Response webResponse = await dio.get(
+        '',
+        options: Options(
+          receiveTimeout: const Duration(seconds: 3),
+          sendTimeout: const Duration(seconds: 4),
+        ),
+      );
+      List<Map<String, dynamic>> wr = List<Map<String, dynamic>>.from(
+        webResponse.data[StorageKeys.wordPacks],
+      );
+      data += wr;
+      box.put(StorageKeys.wordPacks, jsonEncode(wr));
+    } else {
+      String? wordpacks = box.get(StorageKeys.wordPacks);
       if (wordpacks != null) {
-        response.data['wordpacks'].addAll(jsonDecode(wordpacks)['wordpacks']);
+        data += List<Map<String, dynamic>>.from(jsonDecode(wordpacks));
       }
     }
 
     return List<WordPack>.from(
-      response.data['wordpacks'].map((wordpack) => WordPack.fromJson(wordpack)),
+      data.map((wordpack) => WordPack.fromJson(wordpack)),
     );
   }
+}
+
+Future<bool> _hasInternet() async {
+  try {
+    List result = await InternetAddress.lookup('example.com');
+    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      return true;
+    }
+  } on SocketException catch (_) {
+    return false;
+  }
+  return false;
 }
