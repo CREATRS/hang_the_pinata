@@ -24,7 +24,7 @@ class Api {
     List<Map<String, dynamic>> data = List<Map<String, dynamic>>.from(
       StaticData.wordPacks.data![StorageKeys.wordPacks],
     );
-    Box box = Hive.box(StorageKeys.wordPacks);
+    Box box = Hive.box(StorageKeys.box);
 
     if (await _hasInternet()) {
       Response webResponse = await dio.get(

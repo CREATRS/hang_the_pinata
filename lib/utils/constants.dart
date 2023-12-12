@@ -9,6 +9,8 @@ class Routes {
 }
 
 class StorageKeys {
+  static const String box = 'hang_the_pinata';
+  static const String user = 'user';
   static const String wordPacks = 'word_packs';
 }
 
