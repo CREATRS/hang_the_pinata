@@ -29,10 +29,9 @@ class _HomeState extends State<Home> {
             text: "Let's play!",
             controller: controller,
             onPressed: () {
-              controller.success();
               Get.toNamed(Routes.selectWordpack);
-              controller.reset();
             },
+            autoAnimate: true,
           ),
           const Spacer(flex: 2),
         ],
