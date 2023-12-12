@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:hang_the_pinata/backend/models/wordpack.dart';
 import 'package:hang_the_pinata/backend/services/api.dart';
 import 'package:hang_the_pinata/utils/constants.dart';
-import 'package:hang_the_pinata/widgets/components/logo.dart';
+import 'package:hang_the_pinata/widgets/components/cached_or_asset_image.dart';
 import 'package:hang_the_pinata/widgets/components/selectable_item.dart';
 
 class SelectWordpack extends StatelessWidget {
@@ -27,19 +25,8 @@ class SelectWordpack extends StatelessWidget {
             return SelectableItem(
               text: wordpack.name,
               color: AppColors.orange,
-              leading: wordpack.image.contains('http')
-                  ? CachedNetworkImage(
-                      imageUrl: wordpack.image,
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) =>
-                              CircularProgressIndicator(
-                        value: downloadProgress.progress,
-                      ),
-                      errorWidget: (context, url, error) =>
-                          const AppIcon(radius: 18),
-                    )
-                  : Image.asset(wordpack.image, height: 36),
-              alwaysShowTrailing: true,
+                leading: CachedOrAssetImage(wordpack.image),
+                alwaysShowTrailing: true,
             );
           },
         );
