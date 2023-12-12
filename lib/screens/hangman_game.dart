@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 
+import 'package:hang_the_pinata/backend/models/wordpack.dart';
 import 'package:hang_the_pinata/widgets/hangman.dart';
 
 class HangmanGame extends StatelessWidget {
-  const HangmanGame({super.key});
+  const HangmanGame({super.key, required this.wordPack});
+  final WordPack wordPack;
 
   @override
   Widget build(BuildContext context) {
     HangMan hangman = const HangMan();
-    return Center(
-      child: Column(
+    return Scaffold(
+      appBar: AppBar(title: Text(wordPack.name)),
+      body: Column(
         children: [
           hangman,
           Row(

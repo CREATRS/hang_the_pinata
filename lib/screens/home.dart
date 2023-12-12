@@ -6,20 +6,15 @@ import 'package:hang_the_pinata/utils/constants.dart';
 import 'package:hang_the_pinata/widgets/components/button.dart';
 import 'package:hang_the_pinata/widgets/components/logo.dart';
 
-class Home extends StatefulWidget {
+class Home extends StatelessWidget {
   const Home({super.key});
 
-  @override
-  State<Home> createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     RoundedLoadingButtonController controller =
         RoundedLoadingButtonController();
-    return SafeArea(
-      child: Column(
+    return Scaffold(
+      body: Column(
         children: [
           const Spacer(flex: 2),
           const Text('Hang The Piñata', style: TextStyles.h1),
