@@ -6,7 +6,7 @@ class Languages {
   static const String spanish = 'es';
   static const String french = 'fr';
   static const String italian = 'it';
-  static const String german = 'gr'; // TODO: Change to 'de'
+  static const String german = 'de';
 
   static const List<String> values = [
     english,

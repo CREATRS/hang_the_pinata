@@ -1,69 +1,194 @@
 {
-    "word_packs": [
-      {
-        "id": 6,
-        "name": "Professions",
-        "rating": 3.8,
-        "image": "https://img.icons8.com/fluency/48/workers-male.png",
-        "words": [
-          {"en": "doctor", "es": "médico", "fr": "médecin", "gr": "arzt"},
-          {"en": "teacher", "es": "profesor", "fr": "enseignant", "gr": "lehrer"},
-          {"en": "engineer", "es": "ingeniero", "fr": "ingénieur", "gr": "ingenieur"},
-          {"en": "artist", "es": "artista", "fr": "artiste", "gr": "künstler"},
-          {"en": "chef", "es": "chef", "fr": "chef", "gr": "koch"}
-        ]
-      },
-      {
-        "id": 7,
-        "name": "Technology",
-        "rating": 3.4,
-        "image": "https://img.icons8.com/fluency/48/processor.png",
-        "words": [
-          {"en": "computer", "es": "computadora", "fr": "ordinateur", "gr": "computer"},
-          {"en": "smartphone", "es": "teléfono inteligente", "fr": "smartphone", "gr": "smartphone"},
-          {"en": "internet", "es": "internet", "fr": "internet", "gr": "internet"},
-          {"en": "software", "es": "software", "fr": "logiciel", "gr": "software"},
-          {"en": "algorithm", "es": "algoritmo", "fr": "algorithme", "gr": "algorithmus"}
-        ]
-      },
-      {
-        "id": 8,
-        "name": "Sports",
-        "rating": 4.8,
-        "image": "https://img.icons8.com/fluency/48/american-football-player.png",
-        "words": [
-          {"en": "soccer", "es": "fútbol", "fr": "football", "gr": "fußball"},
-          {"en": "basketball", "es": "baloncesto", "fr": "basketball", "gr": "basketball"},
-          {"en": "tennis", "es": "tenis", "fr": "tennis", "gr": "tennis"},
-          {"en": "swimming", "es": "natación", "fr": "natation", "gr": "schwimmen"},
-          {"en": "cycling", "es": "ciclismo", "fr": "cyclisme", "gr": "radfahren"}
-        ]
-      },
-      {
-        "id": 9,
-        "name": "Nature",
-        "rating": 4.0,
-        "image": "https://img.icons8.com/fluency/48/national-park.png",
-        "words": [
-          {"en": "forest", "es": "bosque", "fr": "forêt", "gr": "wald"},
-          {"en": "mountain", "es": "montaña", "fr": "montagne", "gr": "berg"},
-          {"en": "river", "es": "río", "fr": "rivière", "gr": "fluss"},
-          {"en": "sunshine", "es": "sol", "fr": "ensoleillement", "gr": "sonnenschein"},
-          {"en": "rainbow", "es": "arco iris", "fr": "arc-en-ciel", "gr": "regenbogen"}
-        ]
-      },
-      {
-        "id": 10,
-        "name": "Transportation",
-        "rating": 3.2,
-        "image": "https://img.icons8.com/fluency/48/ground-transportation.png",
-        "words": [
-          {"en": "car", "es": "coche", "fr": "voiture", "gr": "auto"},
-          {"en": "bicycle", "es": "bicicleta", "fr": "vélo", "gr": "fahrrad"},
-          {"en": "airplane", "es": "avión", "fr": "avion", "gr": "flugzeug"},
-          {"en": "train", "es": "tren", "fr": "train", "gr": "zug"},
-          {"en": "ship", "es": "barco", "fr": "navire", "gr": "schiff"}
-        ]
-      }
-    ]
-  }
+  "word_packs": [
+    {
+      "id": 6,
+      "name": "Professions",
+      "rating": 3.8,
+      "image": "https://img.icons8.com/fluency/48/workers-male.png",
+      "words": [
+        {
+          "en": "doctor",
+          "es": "médico",
+          "fr": "médecin",
+          "de": "arzt"
+        },
+        {
+          "en": "teacher",
+          "es": "profesor",
+          "fr": "enseignant",
+          "de": "lehrer"
+        },
+        {
+          "en": "engineer",
+          "es": "ingeniero",
+          "fr": "ingénieur",
+          "de": "ingenieur"
+        },
+        {
+          "en": "artist",
+          "es": "artista",
+          "fr": "artiste",
+          "de": "künstler"
+        },
+        {
+          "en": "chef",
+          "es": "chef",
+          "fr": "chef",
+          "de": "koch"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Technology",
+      "rating": 3.4,
+      "image": "https://img.icons8.com/fluency/48/processor.png",
+      "words": [
+        {
+          "en": "computer",
+          "es": "computadora",
+          "fr": "ordinateur",
+          "de": "computer"
+        },
+        {
+          "en": "smartphone",
+          "es": "teléfono inteligente",
+          "fr": "smartphone",
+          "de": "smartphone"
+        },
+        {
+          "en": "internet",
+          "es": "internet",
+          "fr": "internet",
+          "de": "internet"
+        },
+        {
+          "en": "software",
+          "es": "software",
+          "fr": "logiciel",
+          "de": "software"
+        },
+        {
+          "en": "algorithm",
+          "es": "algoritmo",
+          "fr": "algorithme",
+          "de": "algorithmus"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Sports",
+      "rating": 4.8,
+      "image": "https://img.icons8.com/fluency/48/american-football-player.png",
+      "words": [
+        {
+          "en": "soccer",
+          "es": "fútbol",
+          "fr": "football",
+          "de": "fußball"
+        },
+        {
+          "en": "basketball",
+          "es": "baloncesto",
+          "fr": "basketball",
+          "de": "basketball"
+        },
+        {
+          "en": "tennis",
+          "es": "tenis",
+          "fr": "tennis",
+          "de": "tennis"
+        },
+        {
+          "en": "swimming",
+          "es": "natación",
+          "fr": "natation",
+          "de": "schwimmen"
+        },
+        {
+          "en": "cycling",
+          "es": "ciclismo",
+          "fr": "cyclisme",
+          "de": "radfahren"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Nature",
+      "rating": 4.0,
+      "image": "https://img.icons8.com/fluency/48/national-park.png",
+      "words": [
+        {
+          "en": "forest",
+          "es": "bosque",
+          "fr": "forêt",
+          "de": "wald"
+        },
+        {
+          "en": "mountain",
+          "es": "montaña",
+          "fr": "montagne",
+          "de": "berg"
+        },
+        {
+          "en": "river",
+          "es": "río",
+          "fr": "rivière",
+          "de": "fluss"
+        },
+        {
+          "en": "sunshine",
+          "es": "sol",
+          "fr": "ensoleillement",
+          "de": "sonnenschein"
+        },
+        {
+          "en": "rainbow",
+          "es": "arco iris",
+          "fr": "arc-en-ciel",
+          "de": "regenbogen"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Transportation",
+      "rating": 3.2,
+      "image": "https://img.icons8.com/fluency/48/ground-transportation.png",
+      "words": [
+        {
+          "en": "car",
+          "es": "coche",
+          "fr": "voiture",
+          "de": "auto"
+        },
+        {
+          "en": "bicycle",
+          "es": "bicicleta",
+          "fr": "vélo",
+          "de": "fahrrad"
+        },
+        {
+          "en": "airplane",
+          "es": "avión",
+          "fr": "avion",
+          "de": "flugzeug"
+        },
+        {
+          "en": "train",
+          "es": "tren",
+          "fr": "train",
+          "de": "zug"
+        },
+        {
+          "en": "ship",
+          "es": "barco",
+          "fr": "navire",
+          "de": "schiff"
+        }
+      ]
+    }
+  ]
+}
