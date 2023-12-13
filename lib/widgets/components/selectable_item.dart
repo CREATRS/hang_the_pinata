@@ -10,7 +10,7 @@ class SelectableItem<T> extends StatelessWidget {
     this.textColor,
     this.selectedTextColor,
     required this.leading,
-    required this.alwaysShowTrailing,
+    this.middle,
     this.trailing,
     this.onTap,
     this.object,
@@ -22,7 +22,7 @@ class SelectableItem<T> extends StatelessWidget {
   final Color? textColor;
   final Color? selectedTextColor;
   final Widget leading;
-  final bool alwaysShowTrailing;
+  final Widget? middle;
   final Widget? trailing;
   final Function()? onTap;
   final T? object;
@@ -48,7 +48,6 @@ class SelectableItem<T> extends StatelessWidget {
       textColor: textColor ?? this.textColor,
       selectedTextColor: selectedTextColor ?? this.selectedTextColor,
       leading: leading ?? this.leading,
-      alwaysShowTrailing: alwaysShowTrailing ?? this.alwaysShowTrailing,
       trailing: trailing ?? this.trailing,
       onTap: onTap ?? this.onTap,
       object: object ?? this.object,
@@ -78,8 +77,10 @@ class SelectableItem<T> extends StatelessWidget {
             children: [
               leading,
               const SizedBox(width: 18),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.4,
+              Container(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.3,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -105,9 +106,9 @@ class SelectableItem<T> extends StatelessWidget {
                   ],
                 ),
               ),
-              const Spacer(),
-              if (trailing != null && (alwaysShowTrailing || selected))
-                trailing!,
+              if (middle != null) middle!,
+              const SizedBox(width: 4),
+              if (trailing != null) trailing!,
             ],
           ),
         ),
