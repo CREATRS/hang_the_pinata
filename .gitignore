@@ -41,3 +41,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Env
+# git update-index --skip-worktree lib/backend/secrets.dart
+lib/backend/secrets.dart

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 late AnimationController _controller;
-double _target = 0;
+late double _target;
 
 class HangMan extends StatefulWidget {
   const HangMan({super.key});
@@ -13,13 +13,13 @@ class HangMan extends StatefulWidget {
 
   void next() {
     _target += (1 / 11);
-    _controller.animateTo(_target, duration: const Duration(seconds: 1));
+    _controller.animateTo(_target, duration: const Duration(seconds: 2));
   }
 
   void finish() {
     if (_controller.value * 11 < 5) _controller.value += 6 / 11;
     _target = _controller.value + 1 / 11;
-    _controller.animateTo(_target, duration: const Duration(seconds: 1));
+    _controller.animateTo(_target, duration: const Duration(seconds: 2));
   }
 
   void reset() {
@@ -32,10 +32,8 @@ class _HangManState extends State<HangMan> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      // duration: const Duration(seconds: 1),
-    );
+    _controller = AnimationController(vsync: this);
+    _target = 0;
   }
 
   @override

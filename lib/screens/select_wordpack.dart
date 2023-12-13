@@ -1,49 +1,105 @@
 import 'package:flutter/material.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:get/get.dart';
 
 import 'package:hang_the_pinata/backend/models/wordpack.dart';
 import 'package:hang_the_pinata/backend/services/api.dart';
+import 'package:hang_the_pinata/backend/services/app_state.dart';
 import 'package:hang_the_pinata/utils/constants.dart';
-import 'package:hang_the_pinata/widgets/components/logo.dart';
+import 'package:hang_the_pinata/widgets/components/button.dart';
+import 'package:hang_the_pinata/widgets/components/cached_or_asset_image.dart';
 import 'package:hang_the_pinata/widgets/components/selectable_item.dart';
 
-class SelectWordpack extends StatelessWidget {
+class SelectWordpack extends StatefulWidget {
   const SelectWordpack({super.key});
 
   @override
+  State<SelectWordpack> createState() => _SelectWordpackState();
+}
+
+class _SelectWordpackState extends State<SelectWordpack> {
+  WordPack? selectedWordpack;
+  bool loaded = false;
+
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Api.getWordpacks(),
-      builder: (context, AsyncSnapshot<List<WordPack>> snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        List<WordPack> wordpacks = snapshot.data as List<WordPack>;
-        return ListView.builder(
-          itemCount: wordpacks.length,
-          itemBuilder: (context, index) {
-            WordPack wordpack = wordpacks[index];
-            return SelectableItem(
-              text: wordpack.name,
-              color: AppColors.orange,
-              leading: wordpack.image.contains('http')
-                  ? CachedNetworkImage(
-                      imageUrl: wordpack.image,
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) =>
-                              CircularProgressIndicator(
-                        value: downloadProgress.progress,
-                      ),
-                      errorWidget: (context, url, error) =>
-                          const AppIcon(radius: 18),
-                    )
-                  : Image.asset(wordpack.image, height: 36),
-              alwaysShowTrailing: true,
-            );
-          },
-        );
-      },
+    AppStateService appState = Get.find<AppStateService>();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Select your wordpack'),
+        centerTitle: true,
+      ),
+      body: FutureBuilder(
+        future: loaded
+            ? null
+            : Api.getWordPacks(
+                appState.user.value.sourceLanguage!,
+                appState.user.value.targetLanguage!,
+              ),
+        builder: (context, AsyncSnapshot<List<WordPack>> snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          List<WordPack> wordPacks = snapshot.data as List<WordPack>;
+          loaded = true;
+          return ListView.builder(
+            itemCount: wordPacks.length,
+            itemBuilder: (context, index) {
+              WordPack wordPack = wordPacks[index];
+              return SelectableItem(
+                text: wordPack.name,
+                subtitle: '${wordPack.words.length} words',
+                color: AppColors.orange,
+                leading: CachedOrAssetImage(wordPack.image),
+                middle: Flexible(
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    reverse: true,
+                    children: wordPack.languages
+                        .map(
+                          (e) => Image.asset('assets/flags/$e.png', width: 24),
+                        )
+                        .toList()
+                        .reversed
+                        .toList(),
+                  ),
+                ),
+                trailing: Row(
+                  children: List.generate(
+                    5,
+                    (index) => Icon(
+                      index + 1 <= wordPack.rating
+                          ? Icons.star_rounded
+                          : index + .5 < wordPack.rating
+                              ? Icons.star_half_rounded
+                              : Icons.star_border_rounded,
+                      color: Colors.amber,
+                      size: 16,
+                    ),
+                  ),
+                ),
+                onTap: () => setState(() => selectedWordpack = wordPack),
+                selected: selectedWordpack?.id == wordPack.id,
+              );
+            },
+          );
+        },
+      ),
+      bottomNavigationBar: selectedWordpack != null
+          ? Padding(
+              padding: const EdgeInsets.only(bottom: 32),
+              child: Button(
+                onPressed: () => Navigator.pushNamed(
+                  context,
+                  Routes.game,
+                  arguments: selectedWordpack,
+                ),
+                text: 'Play',
+                autoAnimate: true,
+              ),
+            )
+          : null,
+      extendBody: true,
     );
   }
 }
