@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:hang_the_pinata/backend/models/wordpack.dart';
+import 'package:hang_the_pinata/widgets/components/cached_or_asset_image.dart';
 import 'package:hang_the_pinata/widgets/hangman.dart';
 
 class HangmanGame extends StatelessWidget {
@@ -11,7 +12,17 @@ class HangmanGame extends StatelessWidget {
   Widget build(BuildContext context) {
     HangMan hangman = const HangMan();
     return Scaffold(
-      appBar: AppBar(title: Text(wordPack.name)),
+      appBar: AppBar(
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CachedOrAssetImage(wordPack.image),
+            const SizedBox(width: 8),
+            Flexible(child: Text(wordPack.name, overflow: TextOverflow.fade)),
+            const SizedBox(width: 42),
+          ],
+        ),
+      ),
       body: Column(
         children: [
           hangman,

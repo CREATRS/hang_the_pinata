@@ -4,31 +4,40 @@ class WordPack {
   final int id;
   final String name;
   final List<Word> words;
-  // final double price;
   final double rating;
   final String image;
+  final List<String> languages;
 
   const WordPack({
     required this.id,
     required this.name,
     required this.words,
-    // required this.price,
     required this.rating,
     required this.image,
+    required this.languages,
   });
 
   factory WordPack.fromJson(Map<String, dynamic> json) {
+    List<String>? languages;
     return WordPack(
       id: json['id'],
       name: json['name'],
       words: List<Word>.from(
         json['words'].map(
-          (word) => Word.fromJson(word),
+          (w) {
+            if (languages == null) {
+              languages = w.keys.toList();
+            } else {
+              List<String> keys = w.keys.toList();
+              languages = languages!..removeWhere((l) => !keys.contains(l));
+            }
+            return Word.fromJson(w);
+          },
         ),
       ),
-      // price: json['price'].toDouble(),
       rating: json['rating'].toDouble(),
       image: json['image'],
+      languages: languages!,
     );
   }
 
@@ -36,7 +45,6 @@ class WordPack {
         'id': id,
         'name': name,
         'words': words,
-        // 'price': price,
         'rating': rating,
         'image': image,
       };

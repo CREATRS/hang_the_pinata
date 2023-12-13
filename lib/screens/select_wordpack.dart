@@ -42,7 +42,19 @@ class _SelectWordpackState extends State<SelectWordpack> {
                 subtitle: '${wordPack.words.length} words',
                 color: AppColors.orange,
                 leading: CachedOrAssetImage(wordPack.image),
-                alwaysShowTrailing: true,
+                middle: Flexible(
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    reverse: true,
+                    children: wordPack.languages
+                        .map(
+                          (e) => Image.asset('assets/flags/$e.png', width: 24),
+                        )
+                        .toList()
+                        .reversed
+                        .toList(),
+                  ),
+                ),
                 trailing: Row(
                   children: List.generate(
                     5,

@@ -15,7 +15,7 @@ Map<String, dynamic> _wordPacks = {
       'rating': 3.8,
       'image': 'assets/wordpacks/animals.png',
       'words': [
-        {'en': 'lion', 'es': 'león', 'fr': 'lion', 'gr': 'löwe'},
+        {'es': 'león', 'fr': 'lion', 'gr': 'löwe'},
         {'en': 'elephant', 'es': 'elefante', 'fr': 'éléphant', 'gr': 'elefant'},
         {'en': 'giraffe', 'es': 'jirafa', 'fr': 'girafe', 'gr': 'giraffe'},
         {'en': 'zebra', 'es': 'cebra', 'fr': 'zèbre', 'gr': 'zebra'},
@@ -28,11 +28,23 @@ Map<String, dynamic> _wordPacks = {
       'rating': 3.4,
       'image': 'assets/wordpacks/colors.png',
       'words': [
-        {'en': 'red', 'es': 'rojo', 'fr': 'rouge', 'gr': 'rot'},
-        {'en': 'blue', 'es': 'azul', 'fr': 'bleu', 'gr': 'blau'},
-        {'en': 'green', 'es': 'verde', 'fr': 'vert', 'gr': 'grün'},
-        {'en': 'yellow', 'es': 'amarillo', 'fr': 'jaune', 'gr': 'gelb'},
-        {'en': 'pink', 'es': 'rosa', 'fr': 'rose', 'gr': 'rosa'},
+        {'en': 'red', 'es': 'rojo', 'fr': 'rouge', 'gr': 'rot', 'it': 'rosso'},
+        {'en': 'blue', 'es': 'azul', 'fr': 'bleu', 'gr': 'blau', 'it': 'blu'},
+        {
+          'en': 'green',
+          'es': 'verde',
+          'fr': 'vert',
+          'gr': 'grün',
+          'it': 'verde',
+        },
+        {
+          'en': 'yellow',
+          'es': 'amarillo',
+          'fr': 'jaune',
+          'gr': 'gelb',
+          'it': 'giallo',
+        },
+        {'en': 'pink', 'es': 'rosa', 'fr': 'rose', 'gr': 'rosa', 'it': 'rosa'},
       ],
     },
     {
@@ -42,7 +54,7 @@ Map<String, dynamic> _wordPacks = {
       'image': 'assets/wordpacks/fruits.png',
       'words': [
         {'en': 'apple', 'es': 'manzana', 'fr': 'pomme', 'gr': 'apfel'},
-        {'en': 'banana', 'es': 'plátano', 'fr': 'banane', 'gr': 'banane'},
+        {'en': 'banana', 'fr': 'banane', 'gr': 'banane'},
         {'en': 'grape', 'es': 'uva', 'fr': 'raisin', 'gr': 'traube'},
         {'en': 'strawberry', 'es': 'fresa', 'fr': 'fraise', 'gr': 'erdbeere'},
         {'en': 'orange', 'es': 'naranja', 'fr': 'orange', 'gr': 'orange'},

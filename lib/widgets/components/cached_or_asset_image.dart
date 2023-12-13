@@ -18,6 +18,7 @@ class CachedOrAssetImage extends StatelessWidget {
               value: downloadProgress.progress,
             ),
             errorWidget: (_, __, ___) => const AppIcon(radius: 18),
+            height: 36,
           )
         : Image.asset(image, height: 36);
   }
