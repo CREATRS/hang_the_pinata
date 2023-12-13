@@ -20,7 +20,7 @@ Dio dio = Dio(
 );
 
 class Api {
-  static Future<List<WordPack>> getWordPacks() async {
+  static Future<List<WordPack>> getWordPacks(String lang, String lang2) async {
     List<Map<String, dynamic>> data = List<Map<String, dynamic>>.from(
       StaticData.wordPacks.data![StorageKeys.wordPacks],
     );
@@ -47,7 +47,11 @@ class Api {
     }
 
     return List<WordPack>.from(
-      data.map((wordpack) => WordPack.fromJson(wordpack)),
+      data.map((wordpack) => WordPack.fromJson(wordpack)).where(
+            (wordpack) =>
+                wordpack.languages.contains(lang) &&
+                wordpack.languages.contains(lang2),
+          ),
     );
   }
 }

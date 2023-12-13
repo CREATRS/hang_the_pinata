@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'package:get/get.dart';
+
 import 'package:hang_the_pinata/backend/models/wordpack.dart';
 import 'package:hang_the_pinata/backend/services/api.dart';
+import 'package:hang_the_pinata/backend/services/app_state.dart';
 import 'package:hang_the_pinata/utils/constants.dart';
 import 'package:hang_the_pinata/widgets/components/button.dart';
 import 'package:hang_the_pinata/widgets/components/cached_or_asset_image.dart';
@@ -20,13 +23,19 @@ class _SelectWordpackState extends State<SelectWordpack> {
 
   @override
   Widget build(BuildContext context) {
+    AppStateService appState = Get.find<AppStateService>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select your wordpack'),
         centerTitle: true,
       ),
       body: FutureBuilder(
-        future: loaded ? null : Api.getWordPacks(),
+        future: loaded
+            ? null
+            : Api.getWordPacks(
+                appState.user.value.sourceLanguage!,
+                appState.user.value.targetLanguage!,
+              ),
         builder: (context, AsyncSnapshot<List<WordPack>> snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
