@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 late AnimationController _controller;
-double _target = 0;
+late double _target;
 
 class HangMan extends StatefulWidget {
   const HangMan({super.key});
@@ -33,6 +33,7 @@ class _HangManState extends State<HangMan> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this);
+    _target = 0;
   }
 
   @override

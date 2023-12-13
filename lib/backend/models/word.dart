@@ -25,4 +25,13 @@ class Word {
       pt: json['pt'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'en': en,
+        'es': es,
+        'fr': fr,
+        'de': de,
+        'it': it,
+        'pt': pt,
+      };
 }
