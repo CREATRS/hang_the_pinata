@@ -1,6 +1,22 @@
 import 'package:flutter/material.dart';
 
 // Backend
+class Languages {
+  static const String english = 'en';
+  static const String spanish = 'es';
+  static const String french = 'fr';
+  static const String italian = 'it';
+  static const String german = 'gr'; // TODO: Change to 'de'
+
+  static const List<String> values = [
+    english,
+    spanish,
+    french,
+    italian,
+    german,
+  ];
+}
+
 class Routes {
   static const String game = '/game';
   static const String home = '/';

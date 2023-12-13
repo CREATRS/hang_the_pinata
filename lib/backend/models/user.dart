@@ -24,4 +24,18 @@ class User {
       'best_score': bestScore,
     };
   }
+
+  User copyWith({
+    String? sourceLanguage,
+    String? targetLanguage,
+    int? bestScore,
+  }) {
+    return User(
+      sourceLanguage: sourceLanguage ?? this.sourceLanguage,
+      targetLanguage: targetLanguage ?? this.targetLanguage,
+      bestScore: bestScore ?? this.bestScore,
+    );
+  }
+
+  bool get hasLanguages => sourceLanguage != null && targetLanguage != null;
 }

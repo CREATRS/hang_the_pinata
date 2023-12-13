@@ -13,27 +13,33 @@ class AppStateService extends GetxController {
   }
 
   // Values
-  Rxn<User> user = Rxn<User>();
+  Rx<User> user = Rx<User>(const User());
+
+  late Box box;
 
   // Methods
   Future<void> _loadStorage() async {
     await Hive.initFlutter();
-    await Hive.openBox(StorageKeys.box);
+    box = await Hive.openBox(StorageKeys.box);
   }
 
   void _loadUser() async {
-    Box box = Hive.box(StorageKeys.box);
-    Map<String, dynamic>? userData = box.get(StorageKeys.user);
+    Map? userData = box.get(StorageKeys.user);
     if (userData != null) {
       try {
-        user.value = User.fromJson(userData);
+        user.value = User.fromJson(Map<String, dynamic>.from(userData));
+        update();
         // ignore: avoid_catches_without_on_clauses
       } catch (e) {
         log('Error loading user: $e');
-        // await GetStorage().remove('user');
-        box.delete(StorageKeys.user);
-        user.value = null;
+        // box.delete(StorageKeys.user);
+        user.value = const User();
       }
     }
+  }
+
+  void updateUser(User newUser) {
+    user.value = newUser;
+    box.put(StorageKeys.user, newUser.toJson());
   }
 }
