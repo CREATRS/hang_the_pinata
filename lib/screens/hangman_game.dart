@@ -19,18 +19,16 @@ class HangmanGame extends StatefulWidget {
 
 class _HangmanGameState extends State<HangmanGame> {
   late GameController controller;
-  late HangMan hangman;
+  late User user;
 
   @override
   void initState() {
     super.initState();
-    User user = Get.find<AppStateService>().user.value;
-    hangman = const HangMan();
+    user = Get.find<AppStateService>().user.value;
     controller = GameController(
       wordPack: widget.wordPack,
-      source: user.sourceLanguage!,
-      target: user.targetLanguage!,
-      game: hangman,
+      sourceLanguage: user.sourceLanguage!,
+      targetLanguage: user.targetLanguage!,
     );
   }
 
@@ -46,14 +44,15 @@ class _HangmanGameState extends State<HangmanGame> {
             Flexible(
               child: Text(widget.wordPack.name, overflow: TextOverflow.fade),
             ),
-            const SizedBox(width: 42),
+            const SizedBox(width: 8),
+            Image.asset('assets/flags/${user.targetLanguage}.png', width: 24),
           ],
         ),
       ),
       body: Column(
         children: [
           // Animation
-          hangman,
+          HangMan(controller),
 
           // Word
           Padding(
@@ -104,6 +103,11 @@ class _HangmanGameState extends State<HangmanGame> {
               },
             ),
           ),
+          IconButton(
+            onPressed: () => setState(() => controller.reset()),
+            icon: const Icon(Icons.refresh),
+          ),
+          const Spacer(),
         ],
       ),
     );
