@@ -1,11 +1,4 @@
 class Word {
-  final String? en;
-  final String? es;
-  final String? fr;
-  final String? de;
-  final String? it;
-  final String? pt;
-
   const Word({
     this.en,
     this.es,
@@ -25,6 +18,13 @@ class Word {
       pt: json['pt'],
     );
   }
+
+  final String? en;
+  final String? es;
+  final String? fr;
+  final String? de;
+  final String? it;
+  final String? pt;
 
   String get(String lang) => {
         'en': en,
