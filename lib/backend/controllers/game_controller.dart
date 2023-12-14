@@ -17,22 +17,22 @@ class GameController {
   final String sourceLanguage;
   final String targetLanguage;
 
-  final List<String> attemptedLetters = [];
+  final List<String> attempts = [];
   AnimationController? animationController;
 
   double _animationTarget = 0;
   late String _currentWord;
-  late List<String> _letters;
+  late List<String> _characters;
   int _score = 0;
   bool? _win;
 
   // Public methods
   bool attempt(String s) {
-    attemptedLetters.add(s);
+    attempts.add(s);
     if (_currentWord.contains(s)) {
       if (_currentWord
           .split('')
-          .every((element) => attemptedLetters.contains(element))) {
+          .every((element) => attempts.contains(element))) {
         _win = true;
         _score++;
         _finish();
@@ -40,7 +40,7 @@ class GameController {
       return true;
     } else {
       _next();
-      if (animationController!.value * 11 > 5) {
+      if (animationController!.value * 11 >= 5) {
         _win = false;
         _finish();
       }
@@ -56,9 +56,9 @@ class GameController {
 
     _currentWord = wordPack.words[Random().nextInt(wordPack.words.length)]
         .get(targetLanguage);
-    _letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-    _letters.shuffle();
-    attemptedLetters.clear();
+    _characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    _characters.shuffle();
+    attempts.clear();
   }
 
   // Private methods
@@ -78,9 +78,9 @@ class GameController {
 
   // Getters/Setters
   String get currentWord => _currentWord;
-  List<String> get letters => _letters;
+  List<String> get characters => _characters;
   int get score => _score;
   bool? get win => _win;
   int get wrongAttempts =>
-      attemptedLetters.where((c) => !_currentWord.contains(c)).length;
+      attempts.where((c) => !_currentWord.contains(c)).length;
 }

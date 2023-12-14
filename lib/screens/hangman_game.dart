@@ -65,7 +65,7 @@ class _HangmanGameState extends State<HangmanGame> {
             child: Text(
               controller.currentWord
                   .split('')
-                  .map((e) => controller.attemptedLetters.contains(e) ? e : '_')
+                  .map((a) => controller.attempts.contains(a) ? a : '_')
                   .join(' '),
               style: const TextStyle(fontSize: 32),
               textAlign: TextAlign.center,
@@ -77,24 +77,22 @@ class _HangmanGameState extends State<HangmanGame> {
             child: ShakeWidget(
               key: Key(controller.wrongAttempts.toString()),
               controller: shakeController,
-              enabled: controller.attemptedLetters.isNotEmpty,
+              enabled: controller.attempts.isNotEmpty,
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 45,
                 ),
-                itemCount: controller.letters.length,
+                itemCount: controller.characters.length,
                 itemBuilder: (context, index) {
-                  String letter = controller.letters[index];
-                  bool isPressed = controller.attemptedLetters.contains(letter);
-                  bool isCorrect =
-                      isPressed && controller.currentWord.contains(letter);
-                  if (confettiControllers[letter] == null) {
-                    confettiControllers[letter] = ConfettiController(
+                  String character = controller.characters[index];
+                  bool isPressed = controller.attempts.contains(character);
+                  if (confettiControllers[character] == null) {
+                    confettiControllers[character] = ConfettiController(
                       duration: const Duration(milliseconds: 500),
                     );
                   }
                   ConfettiController confettiController =
-                      confettiControllers[letter]!;
+                      confettiControllers[character]!;
                   return Padding(
                     padding: const EdgeInsets.all(4),
                     child: ConfettiWidget(
@@ -105,8 +103,9 @@ class _HangmanGameState extends State<HangmanGame> {
                       blastDirectionality: BlastDirectionality.explosive,
                       child: RawMaterialButton(
                         onPressed: controller.win == null && !isPressed
-                            ? () => setState(() {
-                                  bool attempt = controller.attempt(letter);
+                            ? () async {
+                                setState(() {});
+                                bool attempt = controller.attempt(character);
                                   if (attempt) {
                                     confettiController.play();
                                   } else {
@@ -119,23 +118,22 @@ class _HangmanGameState extends State<HangmanGame> {
                                       bestScore: user.bestScore + 1,
                                     );
                                     appState.updateUser(user);
-                                  }
-                                })
+                                }
+                              }
                             : null,
                         fillColor: isPressed
                             ? Colors.grey.shade300
                             : Colors.grey.shade100,
                         shape: const CircleBorder(),
                         child: Text(
-                          letter,
+                          character,
                           style: TextStyle(
                             color: isPressed
-                                ? isCorrect
+                                ? controller.currentWord.contains(character)
                                     ? Colors.green
                                     : Colors.red
                                 : null,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
