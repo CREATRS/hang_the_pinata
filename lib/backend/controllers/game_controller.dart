@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart' show AnimationController;
 
+import 'package:hang_the_pinata/backend/models/word.dart';
 import 'package:hang_the_pinata/backend/models/wordpack.dart';
 
 class GameController {
@@ -22,6 +23,7 @@ class GameController {
 
   double _animationTarget = 0;
   late String _currentWord;
+  late String _currentWordSource;
   late List<String> _characters;
   int _score = 0;
   bool? _win;
@@ -54,8 +56,10 @@ class GameController {
     _win = null;
     if (clearScore) _score = 0;
 
-    _currentWord = wordPack.words[Random().nextInt(wordPack.words.length)]
-        .get(targetLanguage);
+    Word word = wordPack.words[Random().nextInt(wordPack.words.length)];
+    _currentWord = word.get(targetLanguage);
+    _currentWordSource = word.get(sourceLanguage);
+
     _characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
     attempts.clear();
   }
@@ -89,6 +93,7 @@ class GameController {
 
   // Getters/Setters
   String get currentWord => _currentWord;
+  String get currentWordSource => _currentWordSource;
   List<String> get characters => _characters;
   int get score => _score;
   bool? get win => _win;

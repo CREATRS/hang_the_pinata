@@ -37,10 +37,8 @@ class Button extends StatelessWidget {
                 () => controllerInt.success(),
               );
               await Future.delayed(const Duration(milliseconds: 300));
-              Future.delayed(const Duration(milliseconds: 300), () {
-                controllerInt.reset();
-              });
               onPressed?.call();
+              controllerInt.reset();
             }
           : onPressed,
       color: color,

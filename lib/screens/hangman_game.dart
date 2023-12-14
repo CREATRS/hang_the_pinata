@@ -7,6 +7,7 @@ import 'package:hang_the_pinata/backend/controllers/game_controller.dart';
 import 'package:hang_the_pinata/backend/models/user.dart';
 import 'package:hang_the_pinata/backend/models/wordpack.dart';
 import 'package:hang_the_pinata/backend/services/app_state.dart';
+import 'package:hang_the_pinata/utils/constants.dart';
 import 'package:hang_the_pinata/widgets/components/cached_or_asset_image.dart';
 import 'package:hang_the_pinata/widgets/components/shake_widget.dart';
 import 'package:hang_the_pinata/widgets/hangman.dart';
@@ -61,19 +62,28 @@ class _HangmanGameState extends State<HangmanGame> {
 
           // Word
           Padding(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
             child: Text(
               controller.currentWord
                   .split('')
                   .map((a) => controller.attempts.contains(a) ? a : '_')
                   .join(' '),
-              style: const TextStyle(fontSize: 32),
+              style: TextStyles.h1,
               textAlign: TextAlign.center,
+            ),
+          ),
+          AnimatedContainer(
+            duration: const Duration(seconds: 1),
+            height: controller.win != null ? 20 : 0,
+            child: Text(
+              controller.win != null ? controller.currentWordSource : '',
+              style: TextStyles.h3,
             ),
           ),
 
           // Keyboard
           Flexible(
+            flex: 3,
             child: ShakeWidget(
               key: Key(controller.wrongAttempts.toString()),
               controller: shakeController,
@@ -129,24 +139,6 @@ class _HangmanGameState extends State<HangmanGame> {
                                     );
                                     await 3.seconds.delay();
                                   }
-                                  Get.dialog(
-                                    AlertDialog(
-                                      title: const Text('Congratulations!'),
-                                      content:
-                                          const Text('You learned a new word'),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            controller.reset(clearScore: false);
-                                            Get.back();
-                                            setState(() {});
-                                          },
-                                          child: const Text('Next word'),
-                                        ),
-                                      ],
-                                    ),
-                                    barrierDismissible: false,
-                                  );
                                 } else {
                                   Get.snackbar(
                                     'Game over!',
@@ -177,10 +169,35 @@ class _HangmanGameState extends State<HangmanGame> {
               ),
             ),
           ),
-          IconButton(
-            onPressed: () => setState(() => controller.reset()),
-            icon: const Icon(Icons.refresh),
+
+          // Score and next
+          AnimatedOpacity(
+            duration: const Duration(seconds: 1),
+            opacity: controller.win != null && controller.win! ? 1 : 0,
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Row(
+                children: [
+                  Text(
+                    'Score: ${controller.score}\nBest: ${user.bestScore}',
+                    style: TextStyles.h3,
+                  ),
+                  const Spacer(),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.next_plan),
+                    label: const Text('Next'),
+                    onPressed: () =>
+                        setState(() => controller.reset(clearScore: false)),
+                  ),
+                ],
+              ),
+            ),
           ),
+          if (controller.win != null && !controller.win!)
+            IconButton(
+              onPressed: () => setState(() => controller.reset()),
+              icon: const Icon(Icons.refresh),
+            ),
           const Spacer(),
         ],
       ),
