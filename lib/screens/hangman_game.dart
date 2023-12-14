@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:confetti/confetti.dart';
 import 'package:get/get.dart';
 
 import 'package:hang_the_pinata/backend/controllers/game_controller.dart';
@@ -7,6 +8,7 @@ import 'package:hang_the_pinata/backend/models/user.dart';
 import 'package:hang_the_pinata/backend/models/wordpack.dart';
 import 'package:hang_the_pinata/backend/services/app_state.dart';
 import 'package:hang_the_pinata/widgets/components/cached_or_asset_image.dart';
+import 'package:hang_the_pinata/widgets/components/shake_widget.dart';
 import 'package:hang_the_pinata/widgets/hangman.dart';
 
 class HangmanGame extends StatefulWidget {
@@ -20,11 +22,14 @@ class HangmanGame extends StatefulWidget {
 class _HangmanGameState extends State<HangmanGame> {
   late GameController controller;
   late User user;
+  AppStateService appState = Get.find<AppStateService>();
+  final Map<String, ConfettiController> confettiControllers = {};
+  final ShakeWidgetController shakeController = ShakeWidgetController();
 
   @override
   void initState() {
     super.initState();
-    user = Get.find<AppStateService>().user.value;
+    user = appState.user.value;
     controller = GameController(
       wordPack: widget.wordPack,
       sourceLanguage: user.sourceLanguage!,
@@ -69,38 +74,74 @@ class _HangmanGameState extends State<HangmanGame> {
 
           // Keyboard
           Flexible(
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 45,
-              ),
-              itemCount: controller.letters.length,
-              itemBuilder: (context, index) {
-                String letter = controller.letters[index];
-                bool isPressed = controller.attemptedLetters.contains(letter);
-                bool isCorrect =
-                    isPressed && controller.currentWord.contains(letter);
-                return Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: RawMaterialButton(
-                    onPressed: () => setState(() => controller.attempt(letter)),
-                    fillColor:
-                        isPressed ? Colors.grey.shade300 : Colors.grey.shade100,
-                    elevation: isPressed ? 0 : 5,
-                    shape: const CircleBorder(),
-                    child: Text(
-                      letter,
-                      style: TextStyle(
-                        color: isPressed
-                            ? isCorrect
-                                ? Colors.green
-                                : Colors.red
+            child: ShakeWidget(
+              key: Key(controller.wrongAttempts.toString()),
+              controller: shakeController,
+              enabled: controller.attemptedLetters.isNotEmpty,
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 45,
+                ),
+                itemCount: controller.letters.length,
+                itemBuilder: (context, index) {
+                  String letter = controller.letters[index];
+                  bool isPressed = controller.attemptedLetters.contains(letter);
+                  bool isCorrect =
+                      isPressed && controller.currentWord.contains(letter);
+                  if (confettiControllers[letter] == null) {
+                    confettiControllers[letter] = ConfettiController(
+                      duration: const Duration(milliseconds: 500),
+                    );
+                  }
+                  ConfettiController confettiController =
+                      confettiControllers[letter]!;
+                  return Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: ConfettiWidget(
+                      confettiController: confettiController,
+                      numberOfParticles: 2,
+                      maxBlastForce: 5,
+                      minBlastForce: 2,
+                      blastDirectionality: BlastDirectionality.explosive,
+                      child: RawMaterialButton(
+                        onPressed: controller.win == null && !isPressed
+                            ? () => setState(() {
+                                  bool attempt = controller.attempt(letter);
+                                  if (attempt) {
+                                    confettiController.play();
+                                  } else {
+                                    shakeController.shake();
+                                  }
+                                  if (controller.win != null &&
+                                      controller.win! &&
+                                      user.bestScore < controller.score) {
+                                    user = user.copyWith(
+                                      bestScore: user.bestScore + 1,
+                                    );
+                                    appState.updateUser(user);
+                                  }
+                                })
                             : null,
+                        fillColor: isPressed
+                            ? Colors.grey.shade300
+                            : Colors.grey.shade100,
+                        shape: const CircleBorder(),
+                        child: Text(
+                          letter,
+                          style: TextStyle(
+                            color: isPressed
+                                ? isCorrect
+                                    ? Colors.green
+                                    : Colors.red
+                                : null,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
           IconButton(

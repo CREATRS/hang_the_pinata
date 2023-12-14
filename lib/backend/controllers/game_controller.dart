@@ -23,6 +23,7 @@ class GameController {
   double _animationTarget = 0;
   late String _currentWord;
   late List<String> _letters;
+  int _score = 0;
   bool? _win;
 
   // Public methods
@@ -33,6 +34,7 @@ class GameController {
           .split('')
           .every((element) => attemptedLetters.contains(element))) {
         _win = true;
+        _score++;
         _finish();
       }
       return true;
@@ -50,6 +52,7 @@ class GameController {
     _animationTarget = 0;
     animationController?.reverse();
     _win = null;
+    _score = 0;
 
     _currentWord = wordPack.words[Random().nextInt(wordPack.words.length)]
         .get(targetLanguage);
@@ -76,4 +79,8 @@ class GameController {
   // Getters/Setters
   String get currentWord => _currentWord;
   List<String> get letters => _letters;
+  int get score => _score;
+  bool? get win => _win;
+  int get wrongAttempts =>
+      attemptedLetters.where((c) => !_currentWord.contains(c)).length;
 }

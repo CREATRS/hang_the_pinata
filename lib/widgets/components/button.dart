@@ -16,6 +16,7 @@ class Button extends StatelessWidget {
     required this.onPressed,
     this.autoAnimate = false,
   });
+
   final String text;
   final RoundedLoadingButtonController? controller;
   final Color? color;
@@ -36,7 +37,7 @@ class Button extends StatelessWidget {
                 () => controllerInt.success(),
               );
               await Future.delayed(const Duration(milliseconds: 300));
-              Future.delayed(const Duration(seconds: 2), () {
+              Future.delayed(const Duration(milliseconds: 300), () {
                 controllerInt.reset();
               });
               onPressed?.call();
