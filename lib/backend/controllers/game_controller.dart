@@ -49,8 +49,8 @@ class GameController {
   }
 
   void reset({bool clearScore = true}) {
-    _animationTarget = 0;
-    animationController?.reverse();
+    if (animationController != null) _reverse();
+
     _win = null;
     if (clearScore) _score = 0;
 
@@ -61,18 +61,30 @@ class GameController {
   }
 
   // Private methods
-  void _next() {
-    if (_win != null) return;
-    _animationTarget += (1 / 11);
-    animationController!.animateTo(_animationTarget);
-  }
-
   void _finish() {
     if (animationController!.value * 11 < 5) {
       animationController!.value += 6 / 11;
     }
     _animationTarget = animationController!.value + 1 / 11;
     animationController!.animateTo(_animationTarget);
+  }
+
+  void _next() {
+    if (_win != null) return;
+    _animationTarget += (1 / 11);
+    animationController!.animateTo(_animationTarget);
+  }
+
+  void _reverse() async {
+    if (animationController!.value * 11 < 6) {
+      _animationTarget = 0;
+      animationController!.reverse();
+    } else {
+      _animationTarget -= (1 / 11);
+      await animationController!.animateBack(_animationTarget);
+      _animationTarget = 0;
+      animationController!.value = 0;
+    }
   }
 
   // Getters/Setters
