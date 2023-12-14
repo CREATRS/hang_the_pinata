@@ -48,16 +48,15 @@ class GameController {
     }
   }
 
-  void reset() {
+  void reset({bool clearScore = true}) {
     _animationTarget = 0;
     animationController?.reverse();
     _win = null;
-    _score = 0;
+    if (clearScore) _score = 0;
 
     _currentWord = wordPack.words[Random().nextInt(wordPack.words.length)]
         .get(targetLanguage);
     _characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-    _characters.shuffle();
     attempts.clear();
   }
 

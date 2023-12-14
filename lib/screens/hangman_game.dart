@@ -106,18 +106,53 @@ class _HangmanGameState extends State<HangmanGame> {
                             ? () async {
                                 setState(() {});
                                 bool attempt = controller.attempt(character);
-                                  if (attempt) {
-                                    confettiController.play();
-                                  } else {
-                                    shakeController.shake();
-                                  }
-                                  if (controller.win != null &&
-                                      controller.win! &&
-                                      user.bestScore < controller.score) {
+                                if (attempt) {
+                                  confettiController.play();
+                                } else {
+                                  shakeController.shake();
+                                }
+
+                                if (controller.win == null) return;
+
+                                if (controller.win!) {
+                                  confettiControllers
+                                      .forEach((_, value) => value.play());
+                                  if (controller.score > user.bestScore) {
                                     user = user.copyWith(
-                                      bestScore: user.bestScore + 1,
+                                      bestScore: controller.score,
                                     );
                                     appState.updateUser(user);
+                                    Get.snackbar(
+                                      'New high score!',
+                                      'You scored ${controller.score} points!',
+                                      snackPosition: SnackPosition.BOTTOM,
+                                    );
+                                    await 3.seconds.delay();
+                                  }
+                                  Get.dialog(
+                                    AlertDialog(
+                                      title: const Text('Congratulations!'),
+                                      content:
+                                          const Text('You learned a new word'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            controller.reset(clearScore: false);
+                                            Get.back();
+                                            setState(() {});
+                                          },
+                                          child: const Text('Next word'),
+                                        ),
+                                      ],
+                                    ),
+                                    barrierDismissible: false,
+                                  );
+                                } else {
+                                  Get.snackbar(
+                                    'Game over!',
+                                    'You scored ${controller.score} points!',
+                                    snackPosition: SnackPosition.BOTTOM,
+                                  );
                                 }
                               }
                             : null,
