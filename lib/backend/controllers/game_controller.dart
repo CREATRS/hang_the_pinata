@@ -52,8 +52,7 @@ class GameController {
     _win = null;
 
     _currentWord = wordPack.words[Random().nextInt(wordPack.words.length)]
-        .toJson()[targetLanguage]
-        .toUpperCase();
+        .get(targetLanguage);
     _letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
     _letters.shuffle();
     attemptedLetters.clear();

@@ -26,12 +26,13 @@ class Word {
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  String get(String lang) => {
         'en': en,
         'es': es,
         'fr': fr,
         'de': de,
         'it': it,
         'pt': pt,
-      };
+      }[lang]!
+          .toUpperCase();
 }
