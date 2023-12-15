@@ -25,11 +25,12 @@ class GameController {
   late String _currentWord;
   late String _currentWordSource;
   late List<String> _characters;
+  bool _isReady = false;
   int _score = 0;
   bool? _win;
 
   // Public methods
-  bool attempt(String s) {
+  Future<bool> attempt(String s) async {
     attempts.add(s);
     if (_currentWord.contains(s)) {
       if (_currentWord
@@ -37,21 +38,21 @@ class GameController {
           .every((element) => attempts.contains(element))) {
         _win = true;
         _score++;
-        _finish();
+        await _finish();
       }
       return true;
     } else {
-      _next();
-      if (animationController!.value * 11 >= 5) {
+      await _next();
+      if (animationController!.value * 11 > 5) {
         _win = false;
-        _finish();
+        await _finish();
       }
       return false;
     }
   }
 
-  void reset({bool clearScore = true}) {
-    if (animationController != null) _reverse();
+  Future<void> reset({bool clearScore = true}) async {
+    if (animationController != null) await _reverse();
 
     _win = null;
     if (clearScore) _score = 0;
@@ -62,39 +63,48 @@ class GameController {
 
     _characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
     attempts.clear();
+    _isReady = true;
   }
 
   // Private methods
-  void _finish() {
+  Future<void> _finish() async {
+    if (animationController!.value * 11 >= 6) return;
+    _isReady = false;
     if (animationController!.value * 11 < 5) {
       animationController!.value += 6 / 11;
     }
     _animationTarget = animationController!.value + 1 / 11;
-    animationController!.animateTo(_animationTarget);
+    await animationController!.animateTo(_animationTarget);
+    _isReady = true;
   }
 
-  void _next() {
+  Future<void> _next() async {
     if (_win != null) return;
+    _isReady = false;
     _animationTarget += (1 / 11);
-    animationController!.animateTo(_animationTarget);
+    await animationController!.animateTo(_animationTarget);
+    _isReady = true;
   }
 
-  void _reverse() async {
+  Future<void> _reverse() async {
+    _isReady = false;
     if (animationController!.value * 11 < 6) {
       _animationTarget = 0;
-      animationController!.reverse();
+      await animationController!.reverse();
     } else {
       _animationTarget -= (1 / 11);
       await animationController!.animateBack(_animationTarget);
       _animationTarget = 0;
       animationController!.value = 0;
     }
+    _isReady = true;
   }
 
   // Getters/Setters
   String get currentWord => _currentWord;
   String get currentWordSource => _currentWordSource;
   List<String> get characters => _characters;
+  bool get isReady => _isReady;
   int get score => _score;
   bool? get win => _win;
   int get wrongAttempts =>

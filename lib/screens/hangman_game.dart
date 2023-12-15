@@ -112,10 +112,14 @@ class _HangmanGameState extends State<HangmanGame> {
                       minBlastForce: 2,
                       blastDirectionality: BlastDirectionality.explosive,
                       child: RawMaterialButton(
-                        onPressed: controller.win == null && !isPressed
+                        onPressed: controller.isReady &&
+                                controller.win == null &&
+                                !isPressed
                             ? () async {
                                 setState(() {});
-                                bool attempt = controller.attempt(character);
+                                bool attempt =
+                                    await controller.attempt(character);
+                                setState(() {});
                                 if (attempt) {
                                   confettiController.play();
                                 } else {
@@ -186,8 +190,12 @@ class _HangmanGameState extends State<HangmanGame> {
                   ElevatedButton.icon(
                     icon: const Icon(Icons.next_plan),
                     label: const Text('Next'),
-                    onPressed: () =>
-                        setState(() => controller.reset(clearScore: false)),
+                    onPressed: controller.win != null
+                        ? () async {
+                            await controller.reset(clearScore: false);
+                            setState(() {});
+                          }
+                        : null,
                   ),
                 ],
               ),
@@ -195,7 +203,10 @@ class _HangmanGameState extends State<HangmanGame> {
           ),
           if (controller.win != null && !controller.win!)
             IconButton(
-              onPressed: () => setState(() => controller.reset()),
+              onPressed: () async {
+                await controller.reset();
+                setState(() {});
+              },
               icon: const Icon(Icons.refresh),
             ),
           const Spacer(),

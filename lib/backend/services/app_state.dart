@@ -32,7 +32,7 @@ class AppStateService extends GetxController {
         // ignore: avoid_catches_without_on_clauses
       } catch (e) {
         log('Error loading user: $e');
-        // box.delete(StorageKeys.user);
+        box.delete(StorageKeys.user);
         user.value = const User();
       }
     }
