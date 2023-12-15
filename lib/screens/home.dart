@@ -60,20 +60,20 @@ class _HomeState extends State<Home> {
                 onPressed: () async {
                   controller.start();
                   if (!user.value.hasLanguages) {
-                    await 500.milliseconds.delay(
+                    await 300.milliseconds.delay(
                           () async =>
                               await Get.bottomSheet(const _SelectLanguages()),
                         );
                   }
                   if (!user.value.hasLanguages) {
                     controller.error();
-                    1.seconds.delay(() => controller.reset());
+                    300.milliseconds.delay(() => controller.reset());
                     return;
                   }
                   setState(() {});
                   controller.success();
-                  await 1
-                      .seconds
+                  await 300
+                      .milliseconds
                       .delay(() => Get.toNamed(Routes.selectWordpack));
                   controller.reset();
                 },

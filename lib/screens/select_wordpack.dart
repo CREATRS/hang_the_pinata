@@ -19,13 +19,14 @@ class SelectWordpack extends StatefulWidget {
 }
 
 class _SelectWordpackState extends State<SelectWordpack> {
+  AppStateService appState = Get.find<AppStateService>();
+  RoundedLoadingButtonController controller = RoundedLoadingButtonController();
   WordPack? selectedWordpack;
   bool loaded = false;
   GameProgress? progress;
 
   @override
   Widget build(BuildContext context) {
-    AppStateService appState = Get.find<AppStateService>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select your wordpack'),
@@ -91,7 +92,13 @@ class _SelectWordpackState extends State<SelectWordpack> {
           ? Padding(
               padding: const EdgeInsets.only(bottom: 32),
               child: Button(
-                onPressed: () {
+                controller: controller,
+                onPressed: () async {
+                  controller.start();
+                  controller.success();
+                  await Future.delayed(const Duration(milliseconds: 300));
+
+                  if (!mounted) return;
                   Navigator.pushNamed(
                     context,
                     Routes.game,
@@ -100,13 +107,13 @@ class _SelectWordpackState extends State<SelectWordpack> {
                       'progress': progress,
                     },
                   ).then((p) {
+                    controller.reset();
                     if (p != null) {
                       progress = p as GameProgress;
                     }
                   });
                 },
                 text: 'Play',
-                autoAnimate: true,
               ),
             )
           : null,
