@@ -4,7 +4,6 @@ import 'package:confetti/confetti.dart';
 import 'package:get/get.dart';
 
 import 'package:hang_the_pinata/backend/controllers/game_controller.dart';
-import 'package:hang_the_pinata/backend/models/game_progress.dart';
 import 'package:hang_the_pinata/backend/models/user.dart';
 import 'package:hang_the_pinata/backend/models/wordpack.dart';
 import 'package:hang_the_pinata/backend/services/app_state.dart';

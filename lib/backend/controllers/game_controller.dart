@@ -6,6 +6,8 @@ import 'package:hang_the_pinata/backend/models/game_progress.dart';
 import 'package:hang_the_pinata/backend/models/word.dart';
 import 'package:hang_the_pinata/backend/models/wordpack.dart';
 
+export 'package:hang_the_pinata/backend/models/game_progress.dart';
+
 class GameController {
   GameController({
     required this.wordPack,
