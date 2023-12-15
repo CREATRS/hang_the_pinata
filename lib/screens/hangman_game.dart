@@ -97,7 +97,6 @@ class _HangmanGameState extends State<HangmanGame> {
                 itemCount: controller.characters.length,
                 itemBuilder: (context, index) {
                   String character = controller.characters[index];
-                  bool isPressed = controller.attempts.contains(character);
                   if (confettiControllers[character] == null) {
                     confettiControllers[character] = ConfettiController(
                       duration: const Duration(milliseconds: 500),
@@ -113,68 +112,9 @@ class _HangmanGameState extends State<HangmanGame> {
                       maxBlastForce: 5,
                       minBlastForce: 2,
                       blastDirectionality: BlastDirectionality.explosive,
-                      child: RawMaterialButton(
-                        onPressed: controller.isReady &&
-                                controller.win == null &&
-                                !isPressed
-                            ? () async {
-                                setState(() {});
-                                bool attempt =
-                                    await controller.attempt(character);
-                                setState(() {});
-                                if (attempt) {
-                                  confettiController.play();
-                                } else {
-                                  shakeController.shake();
-                                }
-
-                                if (controller.win == null) return;
-
-                                if (controller.win!) {
-                                  confettiControllers
-                                      .forEach((_, value) => value.play());
-                                  if (controller.score > user.bestScore) {
-                                    user = user.copyWith(
-                                      bestScore: controller.score,
-                                    );
-                                    appState.updateUser(user);
-                                    Get.snackbar(
-                                      'New high score!',
-                                      'You scored ${controller.score} points!',
-                                      snackPosition: SnackPosition.BOTTOM,
-                                    );
-                                    await 3.seconds.delay();
-                                  }
-                                  if (controller.isWordPackCompleted) {
-                                    Get.snackbar(
-                                      'Congratulations!',
-                                      'You completed the word pack!',
-                                      duration: 5.seconds,
-                                    );
-                                  }
-                                } else {
-                                  Get.snackbar(
-                                    'Game over!',
-                                    'You scored ${controller.score} points!',
-                                    snackPosition: SnackPosition.BOTTOM,
-                                  );
-                                }
-                              }
-                            : null,
-                        fillColor: isPressed
-                            ? Colors.grey.shade300
-                            : Colors.grey.shade100,
-                        shape: const CircleBorder(),
-                        child: Text(
-                          character,
-                          style: TextStyle(
-                            color: isPressed
-                                ? controller.currentWord.contains(character)
-                                    ? Colors.green
-                                    : Colors.red
-                                : null,
-                          ),
-                        ),
+                      child: _characterButton(
+                        character,
+                        confettiController: confettiController,
                       ),
                     ),
                   );
@@ -230,6 +170,70 @@ class _HangmanGameState extends State<HangmanGame> {
             ),
           const Spacer(),
         ],
+      ),
+    );
+  }
+
+  Widget _characterButton(
+    String character, {
+    ConfettiController? confettiController,
+  }) {
+    bool isPressed = controller.attempts.contains(character);
+    return RawMaterialButton(
+      onPressed: controller.isReady && controller.win == null && !isPressed
+          ? () async {
+              setState(() {});
+              bool attempt = await controller.attempt(character);
+              setState(() {});
+              if (attempt) {
+                confettiController?.play();
+              } else {
+                shakeController.shake();
+              }
+
+              if (controller.win == null) return;
+
+              if (controller.win!) {
+                confettiControllers.forEach((_, value) => value.play());
+                if (controller.score > user.bestScore) {
+                  user = user.copyWith(
+                    bestScore: controller.score,
+                  );
+                  appState.updateUser(user);
+                  Get.snackbar(
+                    'New high score!',
+                    'You scored ${controller.score} points!',
+                    snackPosition: SnackPosition.BOTTOM,
+                  );
+                  await 3.seconds.delay();
+                }
+                if (controller.isWordPackCompleted) {
+                  Get.snackbar(
+                    'Congratulations!',
+                    'You completed the word pack!',
+                    duration: 5.seconds,
+                  );
+                }
+              } else {
+                Get.snackbar(
+                  'Game over!',
+                  'You scored ${controller.score} points!',
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+              }
+            }
+          : null,
+      fillColor: isPressed ? Colors.grey.shade300 : Colors.grey.shade100,
+      shape: const CircleBorder(),
+      child: Text(
+        character,
+        style: TextStyle(
+          color: isPressed
+              ? controller.currentWord.contains(character)
+                  ? Colors.green
+                  : Colors.red
+              : null,
+        ),
       ),
     );
   }
