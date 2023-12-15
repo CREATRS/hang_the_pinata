@@ -22,6 +22,7 @@ class GameController {
   AnimationController? animationController;
 
   double _animationTarget = 0;
+  final List<String> _completedWords = [];
   late String _currentWord;
   late String _currentWordSource;
   late List<String> _characters;
@@ -54,10 +55,17 @@ class GameController {
   Future<void> reset({bool clearScore = true}) async {
     if (animationController != null) await _reverse();
 
-    _win = null;
-    if (clearScore) _score = 0;
+    if (clearScore) {
+      _score = 0;
+      _completedWords.clear();
+    }
 
-    Word word = wordPack.words[Random().nextInt(wordPack.words.length)];
+    List<Word> availableWords = wordPack.words
+        .where((w) => !_completedWords.contains(w.get(targetLanguage)))
+        .toList();
+    if (availableWords.isEmpty) return;
+    _win = null;
+    Word word = availableWords[Random().nextInt(availableWords.length)];
     _currentWord = word.get(targetLanguage);
     _currentWordSource = word.get(sourceLanguage);
 
@@ -70,6 +78,7 @@ class GameController {
   Future<void> _finish() async {
     if (animationController!.value * 11 >= 6) return;
     _isReady = false;
+    _completedWords.add(_currentWord);
     if (animationController!.value * 11 < 5) {
       animationController!.value += 6 / 11;
     }
@@ -107,6 +116,8 @@ class GameController {
   bool get isReady => _isReady;
   int get score => _score;
   bool? get win => _win;
+  bool get isWordPackCompleted =>
+      _completedWords.length == wordPack.words.length;
   int get wrongAttempts =>
       attempts.where((c) => !_currentWord.contains(c)).length;
 }

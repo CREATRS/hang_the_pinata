@@ -143,6 +143,13 @@ class _HangmanGameState extends State<HangmanGame> {
                                     );
                                     await 3.seconds.delay();
                                   }
+                                  if (controller.isWordPackCompleted) {
+                                    Get.snackbar(
+                                      'Congratulations!',
+                                      'You completed the word pack!',
+                                      duration: 5.seconds,
+                                    );
+                                  }
                                 } else {
                                   Get.snackbar(
                                     'Game over!',
@@ -174,7 +181,7 @@ class _HangmanGameState extends State<HangmanGame> {
             ),
           ),
 
-          // Score and next
+          // Score and button
           AnimatedOpacity(
             duration: const Duration(seconds: 1),
             opacity: controller.win != null && controller.win! ? 1 : 0,
@@ -187,16 +194,25 @@ class _HangmanGameState extends State<HangmanGame> {
                     style: TextStyles.h3,
                   ),
                   const Spacer(),
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.next_plan),
-                    label: const Text('Next'),
-                    onPressed: controller.win != null
-                        ? () async {
-                            await controller.reset(clearScore: false);
-                            setState(() {});
-                          }
-                        : null,
-                  ),
+                  controller.isWordPackCompleted
+                      ? ElevatedButton.icon(
+                          icon: Transform.flip(
+                            flipX: true,
+                            child: const Icon(Icons.next_plan),
+                          ),
+                          label: const Text('Change wordpack'),
+                          onPressed: () => Navigator.pop(context),
+                        )
+                      : ElevatedButton.icon(
+                          icon: const Icon(Icons.next_plan),
+                          label: const Text('Next'),
+                          onPressed: controller.win != null
+                              ? () async {
+                                  await controller.reset(clearScore: false);
+                                  setState(() {});
+                                }
+                              : null,
+                        ),
                 ],
               ),
             ),
