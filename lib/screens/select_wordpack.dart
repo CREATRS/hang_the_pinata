@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import 'package:hang_the_pinata/backend/models/game_progress.dart';
 import 'package:hang_the_pinata/backend/models/wordpack.dart';
 import 'package:hang_the_pinata/backend/services/api.dart';
 import 'package:hang_the_pinata/backend/services/app_state.dart';
@@ -20,6 +21,7 @@ class SelectWordpack extends StatefulWidget {
 class _SelectWordpackState extends State<SelectWordpack> {
   WordPack? selectedWordpack;
   bool loaded = false;
+  GameProgress? progress;
 
   @override
   Widget build(BuildContext context) {
@@ -89,11 +91,20 @@ class _SelectWordpackState extends State<SelectWordpack> {
           ? Padding(
               padding: const EdgeInsets.only(bottom: 32),
               child: Button(
-                onPressed: () => Navigator.pushNamed(
-                  context,
-                  Routes.game,
-                  arguments: selectedWordpack,
-                ),
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    Routes.game,
+                    arguments: {
+                      StorageKeys.wordPacks: selectedWordpack,
+                      'progress': progress,
+                    },
+                  ).then((p) {
+                    if (p != null) {
+                      progress = p as GameProgress;
+                    }
+                  });
+                },
                 text: 'Play',
                 autoAnimate: true,
               ),

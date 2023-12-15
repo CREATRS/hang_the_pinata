@@ -4,6 +4,7 @@ import 'package:confetti/confetti.dart';
 import 'package:get/get.dart';
 
 import 'package:hang_the_pinata/backend/controllers/game_controller.dart';
+import 'package:hang_the_pinata/backend/models/game_progress.dart';
 import 'package:hang_the_pinata/backend/models/user.dart';
 import 'package:hang_the_pinata/backend/models/wordpack.dart';
 import 'package:hang_the_pinata/backend/services/app_state.dart';
@@ -13,8 +14,9 @@ import 'package:hang_the_pinata/widgets/components/shake_widget.dart';
 import 'package:hang_the_pinata/widgets/hangman.dart';
 
 class HangmanGame extends StatefulWidget {
-  const HangmanGame({super.key, required this.wordPack});
+  const HangmanGame({super.key, required this.wordPack, this.progress});
   final WordPack wordPack;
+  final GameProgress? progress;
 
   @override
   State<HangmanGame> createState() => _HangmanGameState();
@@ -35,6 +37,7 @@ class _HangmanGameState extends State<HangmanGame> {
       wordPack: widget.wordPack,
       sourceLanguage: user.sourceLanguage!,
       targetLanguage: user.targetLanguage!,
+      preloadProgress: widget.progress,
     );
   }
 
@@ -201,7 +204,8 @@ class _HangmanGameState extends State<HangmanGame> {
                             child: const Icon(Icons.next_plan),
                           ),
                           label: const Text('Change wordpack'),
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () =>
+                              Navigator.pop(context, controller.progress),
                         )
                       : ElevatedButton.icon(
                           icon: const Icon(Icons.next_plan),

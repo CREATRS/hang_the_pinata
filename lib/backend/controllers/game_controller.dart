@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart' show AnimationController;
 
+import 'package:hang_the_pinata/backend/models/game_progress.dart';
 import 'package:hang_the_pinata/backend/models/word.dart';
 import 'package:hang_the_pinata/backend/models/wordpack.dart';
 
@@ -10,13 +11,17 @@ class GameController {
     required this.wordPack,
     required this.sourceLanguage,
     required this.targetLanguage,
+    this.preloadProgress,
   }) {
     reset();
+    _progress = preloadProgress ?? const GameProgress();
+    _score = _progress.currentScore;
   }
 
   final WordPack wordPack;
   final String sourceLanguage;
   final String targetLanguage;
+  final GameProgress? preloadProgress;
 
   final List<String> attempts = [];
   AnimationController? animationController;
@@ -27,7 +32,8 @@ class GameController {
   late String _currentWordSource;
   late List<String> _characters;
   bool _isReady = false;
-  int _score = 0;
+  late GameProgress _progress;
+  late int _score;
   bool? _win;
 
   // Public methods
@@ -38,7 +44,10 @@ class GameController {
           .split('')
           .every((element) => attempts.contains(element))) {
         _win = true;
-        _score++;
+        if (!_progress.completedWordPacks.contains(wordPack.id)) {
+          _score++;
+          _progress = _progress.increaseScore();
+        }
         await _finish();
       }
       return true;
@@ -79,6 +88,9 @@ class GameController {
     if (animationController!.value * 11 >= 6) return;
     _isReady = false;
     _completedWords.add(_currentWord);
+    if (isWordPackCompleted) {
+      _progress = _progress.addWordPack(wordPack.id);
+    }
     if (animationController!.value * 11 < 5) {
       animationController!.value += 6 / 11;
     }
@@ -118,6 +130,7 @@ class GameController {
   bool? get win => _win;
   bool get isWordPackCompleted =>
       _completedWords.length == wordPack.words.length;
+  GameProgress get progress => _progress;
   int get wrongAttempts =>
       attempts.where((c) => !_currentWord.contains(c)).length;
 }
