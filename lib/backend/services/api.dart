@@ -25,21 +25,28 @@ class Api {
       StaticData.wordPacks.data![StorageKeys.wordPacks],
     );
     Box box = Hive.box(StorageKeys.box);
+    bool fetched = false;
 
     if (await _hasInternet()) {
-      Response webResponse = await dio.get(
-        '',
-        options: Options(
-          receiveTimeout: const Duration(seconds: 3),
-          sendTimeout: const Duration(seconds: 4),
-        ),
-      );
-      List<Map<String, dynamic>> wr = List<Map<String, dynamic>>.from(
-        webResponse.data[StorageKeys.wordPacks],
-      );
-      data += wr;
-      box.put(StorageKeys.wordPacks, jsonEncode(wr));
-    } else {
+      try {
+        Response webResponse = await dio.get(
+          '',
+          options: Options(
+            receiveTimeout: const Duration(seconds: 3),
+            sendTimeout: const Duration(seconds: 4),
+          ),
+        );
+        List<Map<String, dynamic>> wr = List<Map<String, dynamic>>.from(
+          webResponse.data[StorageKeys.wordPacks],
+        );
+        data += wr;
+        box.put(StorageKeys.wordPacks, jsonEncode(wr));
+        fetched = true;
+      } on DioException catch (_) {
+        fetched = false;
+      }
+    }
+    if (!fetched) {
       String? wordpacks = box.get(StorageKeys.wordPacks);
       if (wordpacks != null) {
         data += List<Map<String, dynamic>>.from(jsonDecode(wordpacks));
