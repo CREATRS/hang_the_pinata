@@ -10,31 +10,36 @@
           "en": "doctor",
           "es": "médico",
           "fr": "médecin",
-          "de": "arzt"
+          "de": "arzt",
+          "pt": "médico"
         },
         {
           "en": "teacher",
           "es": "profesor",
           "fr": "enseignant",
-          "de": "lehrer"
+          "de": "lehrer",
+          "pt": "professor"
         },
         {
           "en": "engineer",
           "es": "ingeniero",
           "fr": "ingénieur",
-          "de": "ingenieur"
+          "de": "ingenieur",
+          "pt": "engenheiro"
         },
         {
           "en": "artist",
           "es": "artista",
           "fr": "artiste",
-          "de": "künstler"
+          "de": "künstler",
+          "pt": "artista"
         },
         {
           "en": "chef",
           "es": "chef",
           "fr": "chef",
-          "de": "koch"
+          "de": "koch",
+          "pt": "chef"
         }
       ]
     },
@@ -86,31 +91,36 @@
           "en": "soccer",
           "es": "fútbol",
           "fr": "football",
-          "de": "fußball"
+          "de": "fußball",
+          "pt": "futebol"
         },
         {
           "en": "basketball",
           "es": "baloncesto",
           "fr": "basketball",
-          "de": "basketball"
+          "de": "basketball",
+          "pt": "basquete"
         },
         {
           "en": "tennis",
           "es": "tenis",
           "fr": "tennis",
-          "de": "tennis"
+          "de": "tennis",
+          "pt": "tênis"
         },
         {
           "en": "swimming",
           "es": "natación",
           "fr": "natation",
-          "de": "schwimmen"
+          "de": "schwimmen",
+          "pt": "natação"
         },
         {
           "en": "cycling",
           "es": "ciclismo",
           "fr": "cyclisme",
-          "de": "radfahren"
+          "de": "radfahren",
+          "pt": "ciclismo"
         }
       ]
     },
@@ -162,31 +172,36 @@
           "en": "car",
           "es": "coche",
           "fr": "voiture",
-          "de": "auto"
+          "de": "auto",
+          "pt": "carro"
         },
         {
           "en": "bicycle",
           "es": "bicicleta",
           "fr": "vélo",
-          "de": "fahrrad"
+          "de": "fahrrad",
+          "pt": "bicicleta"
         },
         {
           "en": "airplane",
           "es": "avión",
           "fr": "avion",
-          "de": "flugzeug"
+          "de": "flugzeug",
+          "pt": "avião"
         },
         {
           "en": "train",
           "es": "tren",
           "fr": "train",
-          "de": "zug"
+          "de": "zug",
+          "pt": "trem"
         },
         {
           "en": "ship",
           "es": "barco",
           "fr": "navire",
-          "de": "schiff"
+          "de": "schiff",
+          "pt": "navio"
         }
       ]
     }

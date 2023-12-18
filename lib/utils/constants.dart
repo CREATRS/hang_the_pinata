@@ -7,6 +7,7 @@ class Languages {
   static const String french = 'fr';
   static const String italian = 'it';
   static const String german = 'de';
+  static const String portuguese = 'pt';
 
   static const List<String> values = [
     english,
@@ -14,6 +15,7 @@ class Languages {
     french,
     italian,
     german,
+    portuguese,
   ];
 }
 
@@ -34,6 +36,8 @@ class StorageKeys {
 class AppColors {
   static const Color orange = Color(0xFFD96818);
 }
+
+const Duration duration = Duration(milliseconds: 300);
 
 class TextStyles {
   static const h1 = TextStyle(fontSize: 36, fontWeight: FontWeight.bold);
