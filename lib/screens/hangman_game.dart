@@ -4,6 +4,7 @@ import 'package:confetti/confetti.dart';
 import 'package:get/get.dart';
 
 import 'package:hang_the_pinata/backend/controllers/game_controller.dart';
+import 'package:hang_the_pinata/backend/models/language.dart';
 import 'package:hang_the_pinata/backend/models/user.dart';
 import 'package:hang_the_pinata/backend/models/wordpack.dart';
 import 'package:hang_the_pinata/backend/services/app_state.dart';
@@ -35,7 +36,7 @@ class _HangmanGameState extends State<HangmanGame> {
     controller = GameController(
       wordPack: widget.wordPack,
       sourceLanguage: user.sourceLanguage!,
-      targetLanguage: user.targetLanguage!,
+      targetLanguage: Languages.get(user.targetLanguage!),
       preloadProgress: widget.progress,
     );
   }

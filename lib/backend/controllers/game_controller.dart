@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart' show AnimationController;
 
 import 'package:hang_the_pinata/backend/models/game_progress.dart';
+import 'package:hang_the_pinata/backend/models/language.dart';
 import 'package:hang_the_pinata/backend/models/word.dart';
 import 'package:hang_the_pinata/backend/models/wordpack.dart';
 
@@ -22,7 +23,7 @@ class GameController {
 
   final WordPack wordPack;
   final String sourceLanguage;
-  final String targetLanguage;
+  final Language targetLanguage;
   final GameProgress? preloadProgress;
 
   final List<String> attempts = [];
@@ -72,12 +73,12 @@ class GameController {
     }
 
     List<Word> availableWords = wordPack.words
-        .where((w) => !_completedWords.contains(w.get(targetLanguage)))
+        .where((w) => !_completedWords.contains(w.get(targetLanguage.code)))
         .toList();
     if (availableWords.isEmpty) return;
     _win = null;
     Word word = availableWords[Random().nextInt(availableWords.length)];
-    _currentWord = word.get(targetLanguage);
+    _currentWord = word.get(targetLanguage.code);
     _currentWordSource = word.get(sourceLanguage);
 
     _characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
