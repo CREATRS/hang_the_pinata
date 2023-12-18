@@ -47,6 +47,7 @@ class _SelectWordpackState extends State<SelectWordpack> {
           loaded = true;
           return ListView.builder(
             itemCount: wordPacks.length,
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
             itemBuilder: (context, index) {
               WordPack wordPack = wordPacks[index];
               return SelectableItem(
