@@ -81,7 +81,7 @@ class GameController {
     _currentWord = word.get(targetLanguage.code);
     _currentWordSource = word.get(sourceLanguage);
 
-    _characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    _characters = 'QWERTYUIOPASDFGHJKLZXCVBNM'.split('');
     attempts.clear();
     _isReady = true;
   }
@@ -128,7 +128,7 @@ class GameController {
   String get currentWord => _currentWord;
   String get currentWordSource => _currentWordSource;
   List<String> get characters => _characters;
-  bool get isReady => _isReady;
+  bool get isReady => _isReady && _win == null;
   int get score => _score;
   bool? get win => _win;
   bool get isWordPackCompleted =>

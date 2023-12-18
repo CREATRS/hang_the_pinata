@@ -28,6 +28,7 @@ class _HangmanGameState extends State<HangmanGame> {
   AppStateService appState = Get.find<AppStateService>();
   final Map<String, ConfettiController> confettiControllers = {};
   final ShakeWidgetController shakeController = ShakeWidgetController();
+  String? showAccents;
 
   @override
   void initState() {
@@ -86,48 +87,107 @@ class _HangmanGameState extends State<HangmanGame> {
 
           // Keyboard
           Flexible(
-            flex: 3,
+            flex: 7,
             child: ShakeWidget(
               key: Key(controller.wrongAttempts.toString()),
               controller: shakeController,
               enabled: controller.attempts.isNotEmpty,
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 45,
-                ),
-                itemCount: controller.characters.length,
-                itemBuilder: (context, index) {
-                  String character = controller.characters[index];
-                  if (confettiControllers[character] == null) {
-                    confettiControllers[character] = ConfettiController(
-                      duration: const Duration(milliseconds: 500),
-                    );
-                  }
-                  ConfettiController confettiController =
-                      confettiControllers[character]!;
-                  return Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: ConfettiWidget(
-                      confettiController: confettiController,
-                      numberOfParticles: 2,
-                      maxBlastForce: 5,
-                      minBlastForce: 2,
-                      blastDirectionality: BlastDirectionality.explosive,
-                      child: _characterButton(
-                        character,
-                        confettiController: confettiController,
+              child: Column(
+                children: [10, 9, 7].map((length) {
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    clipBehavior: Clip.none,
+                    physics: const ClampingScrollPhysics(),
+                    child: Row(
+                      children: List.generate(
+                        length,
+                        (index) {
+                          if (length == 9) {
+                            index += 10;
+                          } else if (length == 7) {
+                            index += 19;
+                          }
+                          String character = controller.characters[index];
+                          if (confettiControllers[character] == null) {
+                            confettiControllers[character] =
+                                ConfettiController(duration: duration);
+                          }
+                          ConfettiController confettiController =
+                              confettiControllers[character]!;
+                          List<String> specialCharacters = controller
+                                  .targetLanguage
+                                  .specialCharacters[character] ??
+                              [];
+                          return ConfettiWidget(
+                            confettiController: confettiController,
+                            numberOfParticles: 2,
+                            maxBlastForce: 5,
+                            minBlastForce: 2,
+                            blastDirectionality: BlastDirectionality.explosive,
+                            child: specialCharacters.isEmpty
+                                ? _characterButton(
+                                    character,
+                                    confettiController: confettiController,
+                                    enableLongPress:
+                                        specialCharacters.isNotEmpty,
+                                  )
+                                : AnimatedContainer(
+                                    duration: duration,
+                                    width: MediaQuery.of(context).size.width /
+                                        10 *
+                                        (showAccents == character
+                                            ? specialCharacters.length + 1
+                                            : 1),
+                                    height: 52,
+                                    child: Stack(
+                                      children: [
+                                        ...specialCharacters.map((accent) {
+                                          int index =
+                                              specialCharacters.indexOf(accent);
+                                          return AnimatedPositioned(
+                                            left: showAccents == character
+                                                ? (index + 1) * 40
+                                                : 0,
+                                            curve: Curves.easeInOut,
+                                            duration: duration,
+                                            child: _characterButton(
+                                              accent,
+                                              confettiController:
+                                                  confettiController,
+                                              elevation:
+                                                  showAccents == character
+                                                      ? 2
+                                                      : 0,
+                                            ),
+                                          );
+                                        }),
+                                        _characterButton(
+                                          character,
+                                          specialCharacters: specialCharacters,
+                                          confettiController:
+                                              confettiController,
+                                          enableLongPress:
+                                              specialCharacters.isNotEmpty,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                          );
+                        },
                       ),
                     ),
                   );
-                },
+                }).toList(),
               ),
             ),
           ),
 
           // Score and button
-          AnimatedOpacity(
+          AnimatedSlide(
             duration: const Duration(seconds: 1),
-            opacity: controller.win != null && controller.win! ? 1 : 0,
+            offset: controller.win != null && controller.win!
+                ? Offset.zero
+                : const Offset(0, 2),
             child: Padding(
               padding: const EdgeInsets.all(32),
               child: Row(
@@ -165,6 +225,7 @@ class _HangmanGameState extends State<HangmanGame> {
             IconButton(
               onPressed: () async {
                 await controller.reset();
+                showAccents = null;
                 setState(() {});
               },
               icon: const Icon(Icons.refresh),
@@ -177,63 +238,102 @@ class _HangmanGameState extends State<HangmanGame> {
 
   Widget _characterButton(
     String character, {
+    List<String> specialCharacters = const [],
+    bool enableLongPress = false,
     ConfettiController? confettiController,
+    double elevation = 2,
   }) {
     bool isPressed = controller.attempts.contains(character);
-    return RawMaterialButton(
-      onPressed: controller.isReady && controller.win == null && !isPressed
-          ? () async {
-              setState(() {});
-              bool attempt = await controller.attempt(character);
-              setState(() {});
-              if (attempt) {
-                confettiController?.play();
-              } else {
-                shakeController.shake();
-              }
+    bool hasChildToPress = !specialCharacters.every(
+      (element) => controller.attempts.contains(element),
+    );
+    return Container(
+      width: MediaQuery.of(context).size.width / 10,
+      height: 52,
+      padding: const EdgeInsets.all(2),
+      child: RawMaterialButton(
+        onPressed: controller.isReady
+            ? isPressed && hasChildToPress && showAccents != character
+                ? () => setState(() => showAccents = character)
+                : showAccents == character
+                    ? () => setState(() => showAccents = null)
+                    : isPressed
+                        ? null
+                        : () async {
+                            setState(() {});
+                            bool attempt = await controller.attempt(character);
+                            setState(() {});
+                            if (attempt) {
+                              confettiController?.play();
+                            } else {
+                              shakeController.shake();
+                            }
+                            if (controller.characters.contains(character) &&
+                                character != showAccents) {
+                              showAccents = null;
+                            }
 
-              if (controller.win == null) return;
+                            if (controller.win == null) return;
 
-              if (controller.win!) {
-                confettiControllers.forEach((_, value) => value.play());
-                if (controller.score > user.bestScore) {
-                  user = user.copyWith(
-                    bestScore: controller.score,
-                  );
-                  appState.updateUser(user);
-                  Get.snackbar(
-                    'New high score!',
-                    'You scored ${controller.score} points!',
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
-                  await 3.seconds.delay();
-                }
-                if (controller.isWordPackCompleted) {
-                  Get.snackbar(
-                    'Congratulations!',
-                    'You completed the word pack!',
-                    duration: 5.seconds,
-                  );
-                }
-              } else {
-                Get.snackbar(
-                  'Game over!',
-                  'You scored ${controller.score} points!',
-                  snackPosition: SnackPosition.BOTTOM,
-                );
-              }
-            }
-          : null,
-      fillColor: isPressed ? Colors.grey.shade300 : Colors.grey.shade100,
-      shape: const CircleBorder(),
-      child: Text(
-        character,
-        style: TextStyle(
-          color: isPressed
-              ? controller.currentWord.contains(character)
-                  ? Colors.green
-                  : Colors.red
-              : null,
+                            if (controller.win!) {
+                              confettiControllers
+                                  .forEach((_, value) => value.play());
+                              if (controller.score > user.bestScore) {
+                                user = user.copyWith(
+                                  bestScore: controller.score,
+                                );
+                                appState.updateUser(user);
+                                Get.snackbar(
+                                  'New high score!',
+                                  'You scored ${controller.score} points!',
+                                  snackPosition: SnackPosition.BOTTOM,
+                                );
+                                await 3.seconds.delay();
+                              }
+                              if (controller.isWordPackCompleted) {
+                                Get.snackbar(
+                                  'Congratulations!',
+                                  'You completed the word pack!',
+                                  duration: 5.seconds,
+                                );
+                              }
+                            } else {
+                              Get.snackbar(
+                                'Game over!',
+                                'You scored ${controller.score} points!',
+                                snackPosition: SnackPosition.BOTTOM,
+                              );
+                            }
+                          }
+            : null,
+        onLongPress: controller.isReady && enableLongPress && !isPressed
+            ? () => setState(() => showAccents = character)
+            : null,
+        fillColor: isPressed ? Colors.grey.shade300 : Colors.grey.shade100,
+        elevation: elevation,
+        shape: const CircleBorder(),
+        child: Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            Text(
+              character,
+              style: TextStyle(
+                color: isPressed
+                    ? controller.currentWord.contains(character)
+                        ? Colors.green
+                        : Colors.red
+                    : null,
+              ),
+            ),
+            if (specialCharacters.isNotEmpty)
+              const Positioned(
+                bottom: 0,
+                right: 0,
+                width: 5,
+                height: 10,
+                child: Icon(Icons.arrow_drop_down, size: 16),
+              ),
+          ],
         ),
       ),
     );
