@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:confetti/confetti.dart';
@@ -46,6 +48,32 @@ class _HangmanGameState extends State<HangmanGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: controller.score == 0
+              ? () => Navigator.pop(context)
+              : () => Get.dialog(
+                    AlertDialog(
+                      title: const Text('Are you sure?'),
+                      content: Text(
+                        'You will lose your ${controller.score} points.',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Yes'),
+                        ),
+                      ],
+                    ),
+                  ),
+          icon: Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+        ),
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
