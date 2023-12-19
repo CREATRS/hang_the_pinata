@@ -102,6 +102,9 @@ class _HangmanGameState extends State<HangmanGame> {
                   .join(' '),
               style: TextStyles.h1,
               textAlign: TextAlign.center,
+              textScaler: controller.currentWord.length > 11
+                  ? const TextScaler.linear(0.8)
+                  : null,
             ),
           ),
           AnimatedContainer(
@@ -119,7 +122,8 @@ class _HangmanGameState extends State<HangmanGame> {
             child: ShakeWidget(
               key: Key(controller.wrongAttempts.toString()),
               controller: shakeController,
-              enabled: controller.attempts.isNotEmpty,
+              enabled: controller.attempts.isNotEmpty &&
+                  controller.attempts.first != ' ',
               child: Column(
                 children: [10, 9, 7].map((length) {
                   return SingleChildScrollView(
@@ -213,51 +217,52 @@ class _HangmanGameState extends State<HangmanGame> {
           // Score and button
           AnimatedSlide(
             duration: const Duration(seconds: 1),
-            offset: controller.win != null && controller.win!
-                ? Offset.zero
-                : const Offset(0, 2),
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Row(
-                children: [
-                  Text(
-                    'Score: ${controller.score}\nBest: ${user.bestScore}',
-                    style: TextStyles.h3,
-                  ),
-                  const Spacer(),
-                  controller.isWordPackCompleted
-                      ? ElevatedButton.icon(
-                          icon: Transform.flip(
-                            flipX: true,
-                            child: const Icon(Icons.next_plan),
-                          ),
-                          label: const Text('Change wordpack'),
-                          onPressed: () =>
-                              Navigator.pop(context, controller.progress),
-                        )
-                      : ElevatedButton.icon(
-                          icon: const Icon(Icons.next_plan),
-                          label: const Text('Next'),
-                          onPressed: controller.win != null
-                              ? () async {
-                                  await controller.reset(clearScore: false);
-                                  setState(() {});
-                                }
-                              : null,
+            offset: controller.win != null ? Offset.zero : const Offset(0, 2),
+            child: controller.win != null && controller.win! ||
+                    controller.win == null && controller.score > 0
+                ? Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Score: ${controller.score}\nBest: ${user.bestScore}',
+                          style: TextStyles.h3,
                         ),
-                ],
-              ),
-            ),
+                        const Spacer(),
+                        controller.isWordPackCompleted
+                            ? ElevatedButton.icon(
+                                icon: Transform.flip(
+                                  flipX: true,
+                                  child: const Icon(Icons.next_plan),
+                                ),
+                                label: const Text('Change wordpack'),
+                                onPressed: () =>
+                                    Navigator.pop(context, controller.progress),
+                              )
+                            : ElevatedButton.icon(
+                                icon: const Icon(Icons.next_plan),
+                                label: const Text('Next'),
+                                onPressed: controller.win != null
+                                    ? () async {
+                                        await controller.reset(
+                                          clearScore: false,
+                                        );
+                                        setState(() {});
+                                      }
+                                    : null,
+                              ),
+                      ],
+                    ),
+                  )
+                : IconButton(
+                    onPressed: () async {
+                      await controller.reset();
+                      showAccents = null;
+                      setState(() {});
+                    },
+                    icon: const Icon(Icons.refresh),
+                  ),
           ),
-          if (controller.win != null && !controller.win!)
-            IconButton(
-              onPressed: () async {
-                await controller.reset();
-                showAccents = null;
-                setState(() {});
-              },
-              icon: const Icon(Icons.refresh),
-            ),
           const Spacer(),
         ],
       ),

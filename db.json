@@ -10,36 +10,121 @@
           "en": "doctor",
           "es": "médico",
           "fr": "médecin",
-          "de": "arzt",
-          "pt": "médico"
+          "de": "Arzt",
+          "pt": "médico",
+          "it": "medico"
         },
         {
           "en": "teacher",
           "es": "profesor",
           "fr": "enseignant",
-          "de": "lehrer",
-          "pt": "professor"
+          "de": "Lehrer",
+          "pt": "professor",
+          "it": "insegnante"
         },
         {
           "en": "engineer",
           "es": "ingeniero",
           "fr": "ingénieur",
-          "de": "ingenieur",
-          "pt": "engenheiro"
+          "de": "Ingenieur",
+          "pt": "engenheiro",
+          "it": "ingegnere"
         },
         {
           "en": "artist",
           "es": "artista",
           "fr": "artiste",
-          "de": "künstler",
-          "pt": "artista"
+          "de": "Künstler",
+          "pt": "artista",
+          "it": "artista"
         },
         {
           "en": "chef",
           "es": "chef",
           "fr": "chef",
-          "de": "koch",
-          "pt": "chef"
+          "de": "Koch",
+          "pt": "chef",
+          "it": "chef"
+        },
+        {
+          "en": "nurse",
+          "es": "enfermero",
+          "fr": "infirmier",
+          "de": "Krankenpfleger",
+          "pt": "enfermeiro",
+          "it": "infermiere"
+        },
+        {
+          "en": "architect",
+          "es": "arquitecto",
+          "fr": "architecte",
+          "de": "Architekt",
+          "pt": "arquiteto",
+          "it": "architetto"
+        },
+        {
+          "en": "lawyer",
+          "es": "abogado",
+          "fr": "avocat",
+          "de": "Anwalt",
+          "pt": "advogado",
+          "it": "avvocato"
+        },
+        {
+          "en": "scientist",
+          "es": "científico",
+          "fr": "scientifique",
+          "de": "Wissenschaftler",
+          "pt": "cientista",
+          "it": "scienziato"
+        },
+        {
+          "en": "pilot",
+          "es": "piloto",
+          "fr": "pilote",
+          "de": "Pilot",
+          "pt": "piloto",
+          "it": "pilota"
+        },
+        {
+          "en": "firefighter",
+          "es": "bombero",
+          "fr": "pompier",
+          "de": "Feuerwehrmann",
+          "pt": "bombeiro",
+          "it": "vigile del fuoco"
+        },
+        {
+          "en": "electrician",
+          "es": "electricista",
+          "fr": "électricien",
+          "de": "Elektriker",
+          "pt": "eletricista",
+          "it": "elettricista"
+        },
+        {
+          "en": "journalist",
+          "es": "periodista",
+          "fr": "journaliste",
+          "de": "Journalist",
+          "pt": "jornalista",
+          "it": "giornalista"
+        },
+        {
+          "en": "plumber",
+          "es": "plomero",
+          "fr": "plombier",
+          "de": "Installateur",
+          "pt": "encanador",
+          "it": "idraulico"
+        },
+        {
+          "en": "actor",
+          "es": "actor",
+          "fr": "acteur",
+          "de": "Schauspieler",
+          "pt": "ator",
+          "it": "attore"
         }
       ]
     },
@@ -53,31 +138,71 @@
           "en": "computer",
           "es": "computadora",
           "fr": "ordinateur",
-          "de": "computer"
+          "de": "computer",
+          "pt": "computador"
         },
         {
           "en": "smartphone",
           "es": "teléfono inteligente",
           "fr": "smartphone",
-          "de": "smartphone"
+          "de": "smartphone",
+          "pt": "smartphone"
         },
         {
           "en": "internet",
           "es": "internet",
           "fr": "internet",
-          "de": "internet"
+          "de": "internet",
+          "pt": "internet"
         },
         {
           "en": "software",
           "es": "software",
           "fr": "logiciel",
-          "de": "software"
+          "de": "software",
+          "pt": "software"
         },
         {
           "en": "algorithm",
           "es": "algoritmo",
           "fr": "algorithme",
-          "de": "algorithmus"
+          "de": "algorithmus",
+          "pt": "algoritmo"
+        },
+        {
+          "en": "database",
+          "es": "base de datos",
+          "fr": "base de données",
+          "de": "Datenbank",
+          "pt": "base de dados"
+        },
+        {
+          "en": "programming",
+          "es": "programación",
+          "fr": "programmation",
+          "de": "Programmierung",
+          "pt": "programação"
+        },
+        {
+          "en": "hardware",
+          "es": "hardware",
+          "fr": "matériel",
+          "de": "Hardware",
+          "pt": "hardware"
+        },
+        {
+          "en": "network",
+          "es": "red",
+          "fr": "réseau",
+          "de": "Netzwerk",
+          "pt": "rede"
+        },
+        {
+          "en": "cybersecurity",
+          "es": "ciberseguridad",
+          "fr": "sécurité informatique",
+          "de": "Cybersicherheit",
+          "pt": "cibersegurança"
         }
       ]
     },
@@ -121,6 +246,27 @@
           "fr": "cyclisme",
           "de": "radfahren",
           "pt": "ciclismo"
+        },
+        {
+          "en": "golf",
+          "es": "golf",
+          "fr": "golf",
+          "de": "Golf",
+          "pt": "golfe"
+        },
+        {
+          "en": "volleyball",
+          "es": "vóley",
+          "fr": "volleyball",
+          "de": "Volleyball",
+          "pt": "vôlei"
+        },
+        {
+          "en": "athletics",
+          "es": "atletismo",
+          "fr": "athlétisme",
+          "de": "Leichtathletik",
+          "pt": "atletismo"
         }
       ]
     },

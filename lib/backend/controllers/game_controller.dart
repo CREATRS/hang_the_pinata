@@ -34,7 +34,7 @@ class GameController {
   late String _currentWord;
   late String _currentWordSource;
   late List<String> _characters;
-  bool _isReady = false;
+  bool _isReady = true;
   late GameProgress _progress;
   late int _score;
   bool? _win;
@@ -65,6 +65,9 @@ class GameController {
   }
 
   Future<void> reset({bool clearScore = true}) async {
+    if (!_isReady) return;
+
+    _isReady = false;
     if (animationController != null) await _reverse();
 
     if (clearScore) {
@@ -75,7 +78,10 @@ class GameController {
     List<Word> availableWords = wordPack.words
         .where((w) => !_completedWords.contains(w.get(targetLanguage.code)))
         .toList();
-    if (availableWords.isEmpty) return;
+    if (availableWords.isEmpty) {
+      _isReady = true;
+      return;
+    }
     _win = null;
     Word word = availableWords[Random().nextInt(availableWords.length)];
     _currentWord = word.get(targetLanguage.code);
@@ -83,6 +89,9 @@ class GameController {
 
     _characters = 'QWERTYUIOPASDFGHJKLZXCVBNM'.split('');
     attempts.clear();
+    if (_currentWord.contains(' ')) {
+      attempts.add(' ');
+    }
     _isReady = true;
   }
 
