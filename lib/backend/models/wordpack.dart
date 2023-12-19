@@ -1,13 +1,6 @@
 import 'word.dart';
 
 class WordPack {
-  final int id;
-  final String name;
-  final List<Word> words;
-  final double rating;
-  final String image;
-  final List<String> languages;
-
   const WordPack({
     required this.id,
     required this.name,
@@ -40,6 +33,13 @@ class WordPack {
       languages: languages!,
     );
   }
+
+  final int id;
+  final String name;
+  final List<Word> words;
+  final double rating;
+  final String image;
+  final List<String> languages;
 
   Map<String, dynamic> toJson() => {
         'id': id,

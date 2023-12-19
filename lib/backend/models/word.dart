@@ -1,11 +1,4 @@
 class Word {
-  final String? en;
-  final String? es;
-  final String? fr;
-  final String? de;
-  final String? it;
-  final String? pt;
-
   const Word({
     this.en,
     this.es,
@@ -26,12 +19,20 @@ class Word {
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  final String? en;
+  final String? es;
+  final String? fr;
+  final String? de;
+  final String? it;
+  final String? pt;
+
+  String get(String lang) => {
         'en': en,
         'es': es,
         'fr': fr,
         'de': de,
         'it': it,
         'pt': pt,
-      };
+      }[lang]!
+          .toUpperCase();
 }

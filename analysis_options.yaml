@@ -14,6 +14,7 @@ linter:
     - avoid_redundant_argument_values
     - avoid_unused_constructor_parameters
     - camel_case_types
+    - combinators_ordering
     - curly_braces_in_flow_control_structures
     - implementation_imports
     - leading_newlines_in_multiline_strings
@@ -27,6 +28,7 @@ linter:
     - sized_box_for_whitespace
     - slash_for_doc_comments
     - sort_child_properties_last
+    - sort_constructors_first
     - sort_unnamed_constructors_first
     - unnecessary_brace_in_string_interps
     - unnecessary_final

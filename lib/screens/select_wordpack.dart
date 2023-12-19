@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import 'package:hang_the_pinata/backend/models/game_progress.dart';
 import 'package:hang_the_pinata/backend/models/wordpack.dart';
 import 'package:hang_the_pinata/backend/services/api.dart';
 import 'package:hang_the_pinata/backend/services/app_state.dart';
@@ -18,12 +19,14 @@ class SelectWordpack extends StatefulWidget {
 }
 
 class _SelectWordpackState extends State<SelectWordpack> {
+  AppStateService appState = Get.find<AppStateService>();
+  RoundedLoadingButtonController controller = RoundedLoadingButtonController();
   WordPack? selectedWordpack;
   bool loaded = false;
+  GameProgress? progress;
 
   @override
   Widget build(BuildContext context) {
-    AppStateService appState = Get.find<AppStateService>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select your wordpack'),
@@ -44,6 +47,7 @@ class _SelectWordpackState extends State<SelectWordpack> {
           loaded = true;
           return ListView.builder(
             itemCount: wordPacks.length,
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
             itemBuilder: (context, index) {
               WordPack wordPack = wordPacks[index];
               return SelectableItem(
@@ -89,13 +93,26 @@ class _SelectWordpackState extends State<SelectWordpack> {
           ? Padding(
               padding: const EdgeInsets.only(bottom: 32),
               child: Button(
-                onPressed: () => Navigator.pushNamed(
-                  context,
-                  Routes.game,
-                  arguments: selectedWordpack,
-                ),
+                controller: controller,
+                onPressed: () async {
+                  controller.start();
+                  controller.success();
+                  await Future.delayed(const Duration(milliseconds: 300));
+
+                  if (!mounted) return;
+                  Navigator.pushNamed(
+                    context,
+                    Routes.game,
+                    arguments: {
+                      StorageKeys.wordPacks: selectedWordpack,
+                      'progress': progress,
+                    },
+                  ).then((p) {
+                    controller.reset();
+                    progress = p as GameProgress?;
+                  });
+                },
                 text: 'Play',
-                autoAnimate: true,
               ),
             )
           : null,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import 'package:hang_the_pinata/backend/models/wordpack.dart';
 import 'package:hang_the_pinata/screens/select_wordpack.dart';
 import 'backend/services/app_state.dart';
 import 'screens/hangman_game.dart';
@@ -33,7 +32,11 @@ Route<dynamic> _router(RouteSettings settings) {
   late Widget screen;
   switch (settings.name) {
     case Routes.game:
-      screen = HangmanGame(wordPack: settings.arguments as WordPack);
+      Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
+      screen = HangmanGame(
+        wordPack: args[StorageKeys.wordPacks],
+        progress: args['progress'],
+      );
       break;
     case Routes.home:
       screen = const Home();
@@ -44,8 +47,5 @@ Route<dynamic> _router(RouteSettings settings) {
     default:
       throw Exception('Invalid route: ${settings.name}');
   }
-  return MaterialPageRoute<dynamic>(
-    builder: (_) => screen,
-    settings: settings,
-  );
+  return MaterialPageRoute<dynamic>(builder: (_) => screen, settings: settings);
 }

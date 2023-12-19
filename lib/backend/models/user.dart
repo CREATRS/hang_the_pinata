@@ -1,8 +1,4 @@
 class User {
-  final String? sourceLanguage;
-  final String? targetLanguage;
-  final int bestScore;
-
   const User({
     this.sourceLanguage,
     this.targetLanguage,
@@ -16,6 +12,10 @@ class User {
       bestScore: json['best_score'],
     );
   }
+
+  final String? sourceLanguage;
+  final String? targetLanguage;
+  final int bestScore;
 
   Map<String, dynamic> toJson() {
     return {
