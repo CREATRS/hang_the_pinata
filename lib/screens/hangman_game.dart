@@ -112,7 +112,7 @@ class _HangmanGameState extends State<HangmanGame> {
             ),
           ),
           AnimatedContainer(
-            duration: const Duration(seconds: 1),
+            duration: 1.seconds,
             height: controller.win != null ? 20 : 0,
             child: Text(
               controller.win != null ? controller.currentWordSource : '',
@@ -146,7 +146,7 @@ class _HangmanGameState extends State<HangmanGame> {
                           String character = controller.characters[index];
                           if (confettiControllers[character] == null) {
                             confettiControllers[character] =
-                                ConfettiController(duration: duration);
+                                ConfettiController(duration: 2.seconds);
                           }
                           ConfettiController confettiController =
                               confettiControllers[character]!;
@@ -220,7 +220,7 @@ class _HangmanGameState extends State<HangmanGame> {
 
           // Score and button
           AnimatedSlide(
-            duration: const Duration(seconds: 1),
+            duration: 1.seconds,
             offset: controller.win != null ? Offset.zero : const Offset(0, 2),
             child: controller.win != null && controller.win! ||
                     controller.win == null && controller.score > 0
