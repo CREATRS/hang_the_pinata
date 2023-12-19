@@ -14,34 +14,18 @@ class Button extends StatelessWidget {
     this.controller,
     this.color = AppColors.orange,
     required this.onPressed,
-    this.autoAnimate = false,
   });
+
   final String text;
   final RoundedLoadingButtonController? controller;
   final Color? color;
   final VoidCallback? onPressed;
-  final bool autoAnimate;
 
   @override
   Widget build(BuildContext context) {
-    RoundedLoadingButtonController controllerInt =
-        controller ?? RoundedLoadingButtonController();
     return RoundedLoadingButton(
-      controller: controllerInt,
-      onPressed: autoAnimate
-          ? () async {
-              controllerInt.start();
-              await Future.delayed(
-                const Duration(milliseconds: 700),
-                () => controllerInt.success(),
-              );
-              await Future.delayed(const Duration(milliseconds: 300));
-              Future.delayed(const Duration(seconds: 2), () {
-                controllerInt.reset();
-              });
-              onPressed?.call();
-            }
-          : onPressed,
+      controller: controller ?? RoundedLoadingButtonController(),
+      onPressed: onPressed,
       color: color,
       height: 45,
       animateOnTap: controller == null,

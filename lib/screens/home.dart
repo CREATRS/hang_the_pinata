@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import 'package:hang_the_pinata/backend/models/language.dart';
 import 'package:hang_the_pinata/backend/models/user.dart';
 import 'package:hang_the_pinata/backend/services/app_state.dart';
 import 'package:hang_the_pinata/utils/constants.dart';
@@ -60,20 +61,20 @@ class _HomeState extends State<Home> {
                 onPressed: () async {
                   controller.start();
                   if (!user.value.hasLanguages) {
-                    await 500.milliseconds.delay(
+                    await 300.milliseconds.delay(
                           () async =>
                               await Get.bottomSheet(const _SelectLanguages()),
                         );
                   }
                   if (!user.value.hasLanguages) {
                     controller.error();
-                    1.seconds.delay(() => controller.reset());
+                    300.milliseconds.delay(() => controller.reset());
                     return;
                   }
                   setState(() {});
                   controller.success();
-                  await 1
-                      .seconds
+                  await 300
+                      .milliseconds
                       .delay(() => Get.toNamed(Routes.selectWordpack));
                   controller.reset();
                 },
@@ -98,13 +99,15 @@ class __SelectLanguagesState extends State<_SelectLanguages> {
   String? sourceLanguage;
   String? targetLanguage;
 
-  Widget languageButton(String language, bool isSource) {
-    bool isActive = isSource && sourceLanguage == language ||
-        !isSource && targetLanguage == language;
+  Widget languageButton(Language language, bool isSource) {
+    bool isActive = isSource && sourceLanguage == language.code ||
+        !isSource && targetLanguage == language.code;
     return GestureDetector(
       onTap: () {
         setState(() {
-          isSource ? sourceLanguage = language : targetLanguage = language;
+          isSource
+              ? sourceLanguage = language.code
+              : targetLanguage = language.code;
         });
       },
       child: AnimatedContainer(
@@ -114,7 +117,8 @@ class __SelectLanguagesState extends State<_SelectLanguages> {
         ),
         width: isActive ? 64 : 48,
         duration: const Duration(milliseconds: 200),
-        child: Image.asset('assets/flags/$language.png', fit: BoxFit.cover),
+        child:
+            Image.asset('assets/flags/${language.code}.png', fit: BoxFit.cover),
       ),
     );
   }
