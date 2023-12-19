@@ -51,27 +51,30 @@ class _HangmanGameState extends State<HangmanGame> {
         leading: IconButton(
           onPressed: controller.score == 0
               ? () => Navigator.pop(context)
-              : () => Get.dialog(
-                    AlertDialog(
-                      title: const Text('Are you sure?'),
-                      content: Text(
-                        'You will lose your ${controller.score} points.',
+              : controller.progress.completedWordPacks
+                      .contains(widget.wordPack.id)
+                  ? () => Navigator.pop(context, controller.progress)
+                  : () => Get.dialog(
+                        AlertDialog(
+                          title: const Text('Are you sure?'),
+                          content: Text(
+                            'You will lose your ${controller.score} points.',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Yes'),
+                            ),
+                          ],
+                        ),
                       ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Yes'),
-                        ),
-                      ],
-                    ),
-                  ),
           icon: Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
         ),
         title: Row(
@@ -86,6 +89,7 @@ class _HangmanGameState extends State<HangmanGame> {
             Image.asset('assets/flags/${user.targetLanguage}.png', width: 24),
           ],
         ),
+        centerTitle: true,
       ),
       body: Column(
         children: [

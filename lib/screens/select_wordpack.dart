@@ -109,9 +109,7 @@ class _SelectWordpackState extends State<SelectWordpack> {
                     },
                   ).then((p) {
                     controller.reset();
-                    if (p != null) {
-                      progress = p as GameProgress;
-                    }
+                    progress = p as GameProgress?;
                   });
                 },
                 text: 'Play',
