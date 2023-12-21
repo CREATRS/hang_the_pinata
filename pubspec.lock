@@ -171,6 +171,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  freezed_annotation:
+    dependency: transitive
+    description:
+      name: freezed_annotation
+      sha256: c3fd9336eb55a38cc1bbd79ab17573113a8deccd0ecbbf926cca3c62803b5c2d
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.1"
   get:
     dependency: "direct main"
     description:
@@ -227,6 +235,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.7"
+  json_annotation:
+    dependency: transitive
+    description:
+      name: json_annotation
+      sha256: b10a7b2ff83d83c777edba3c6a0f97045ddadd56c944e1a23a3fdf43a1bf4467
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.8.1"
   lints:
     dependency: transitive
     description:
@@ -355,6 +371,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.7.3"
+  purchases_flutter:
+    dependency: "direct main"
+    description:
+      name: purchases_flutter
+      sha256: "947ec341532d0b1ce18f61f222f3568e00e7f7b73a4f6990358593bf78dfa35b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.5.1"
   rounded_loading_button:
     dependency: "direct main"
     description:

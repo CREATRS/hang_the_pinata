@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 // Backend
+const String entitlementId = 'premium';
+
 class Routes {
   static const String game = '/game';
   static const String home = '/';

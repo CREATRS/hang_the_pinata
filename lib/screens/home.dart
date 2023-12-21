@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 
 import 'package:hang_the_pinata/backend/models/language.dart';
 import 'package:hang_the_pinata/backend/models/user.dart';
 import 'package:hang_the_pinata/backend/services/app_state.dart';
+import 'package:hang_the_pinata/backend/services/purchases.dart';
 import 'package:hang_the_pinata/utils/constants.dart';
 import 'package:hang_the_pinata/widgets/components/button.dart';
 import 'package:hang_the_pinata/widgets/components/logo.dart';
+import 'package:hang_the_pinata/widgets/modules/paywall.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -90,6 +93,32 @@ class _HomeState extends State<Home> {
                   if (!user.value.hasLanguages) {
                     controller.error();
                     300.milliseconds.delay(() => controller.reset());
+                    return;
+                  }
+                  if (!user.value.isPremium) {
+                    Offering? offerings = await PurchasesService.getOffering();
+                    if (offerings == null) {
+                      controller.error();
+                      Get.snackbar(
+                        'Error',
+                        'There was an error connecting to the store. '
+                            'Please try again later.',
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                        snackPosition: SnackPosition.BOTTOM,
+                      );
+                      3.seconds.delay(() => controller.reset());
+                      return;
+                    }
+                    if (!mounted) return;
+                    await Get.bottomSheet(
+                      PayWall(offerings),
+                      isScrollControlled: true,
+                    );
+                  }
+                  if (!user.value.isPremium) {
+                    controller.error();
+                    1.seconds.delay(() => controller.reset());
                     return;
                   }
                   setState(() {});

@@ -50,11 +50,15 @@ class AppStateService extends GetxController {
     String? sourceLanguage,
     String? targetLanguage,
     int? bestScore,
+    String? purchasesUserId,
+    bool? isPremium,
   }) async {
     user.value = user.value.copyWith(
       sourceLanguage: sourceLanguage,
       targetLanguage: targetLanguage,
       bestScore: bestScore,
+      purchasesUserId: purchasesUserId,
+      isPremium: isPremium,
     );
     await box.put(StorageKeys.user, user.value.toJson());
   }
