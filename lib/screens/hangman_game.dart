@@ -316,10 +316,9 @@ class _HangmanGameState extends State<HangmanGame> {
                               confettiControllers
                                   .forEach((_, value) => value.play());
                               if (controller.score > user.bestScore) {
-                                user = user.copyWith(
+                                appState.updateUser(
                                   bestScore: controller.score,
                                 );
-                                appState.updateUser(user);
                                 Get.snackbar(
                                   'New high score!',
                                   'You scored ${controller.score} points!',

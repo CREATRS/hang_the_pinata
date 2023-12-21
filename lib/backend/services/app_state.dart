@@ -46,8 +46,16 @@ class AppStateService extends GetxController {
     await box.put(StorageKeys.darkMode, value);
   }
 
-  void updateUser(User newUser) {
-    user.value = newUser;
-    box.put(StorageKeys.user, newUser.toJson());
+  Future<void> updateUser({
+    String? sourceLanguage,
+    String? targetLanguage,
+    int? bestScore,
+  }) async {
+    user.value = user.value.copyWith(
+      sourceLanguage: sourceLanguage,
+      targetLanguage: targetLanguage,
+      bestScore: bestScore,
+    );
+    await box.put(StorageKeys.user, user.value.toJson());
   }
 }

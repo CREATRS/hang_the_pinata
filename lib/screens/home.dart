@@ -195,12 +195,10 @@ class __SelectLanguagesState extends State<_SelectLanguages> {
               GetBuilder<AppStateService>(
                 builder: (appState) {
                   return Button(
-                    onPressed: () {
-                      appState.updateUser(
-                        appState.user.value.copyWith(
-                          sourceLanguage: sourceLanguage,
-                          targetLanguage: targetLanguage,
-                        ),
+                    onPressed: () async {
+                      await appState.updateUser(
+                        sourceLanguage: sourceLanguage,
+                        targetLanguage: targetLanguage,
                       );
                       Get.back();
                     },
