@@ -10,7 +10,9 @@ import 'utils/constants.dart';
 
 void main() async {
   Get.isLogEnable = false;
-  Get.put(AppStateService());
+  AppStateService appState = AppStateService();
+  await appState.init();
+  Get.put(appState);
   runApp(const MyApp());
 }
 

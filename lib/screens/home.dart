@@ -18,10 +18,31 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   RoundedLoadingButtonController controller = RoundedLoadingButtonController();
+  bool isDark = Get.isDarkMode;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          Row(
+            children: [
+              const Icon(Icons.dark_mode_rounded),
+              GetBuilder<AppStateService>(
+                builder: (appState) {
+                  return Switch(
+                    value: isDark,
+                    onChanged: (bool value) async {
+                      await appState.setDarkMode(value);
+                      setState(() => isDark = value);
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
       body: GetBuilder<AppStateService>(
         builder: (appstate) {
           Rx<User> user = appstate.user;
