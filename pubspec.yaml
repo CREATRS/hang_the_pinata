@@ -19,6 +19,7 @@ dependencies:
   lottie: ^2.7.0
   purchases_flutter: ^6.5.1
   rounded_loading_button: ^2.1.0
+  sign_in_with_apple: ^5.0.0
 
 dev_dependencies:
   flutter_lints: ^3.0.1

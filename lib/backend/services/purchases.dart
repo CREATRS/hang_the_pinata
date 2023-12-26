@@ -1,12 +1,29 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import 'package:hang_the_pinata/backend/secrets.dart';
 import 'package:hang_the_pinata/backend/services/app_state.dart';
 import 'package:hang_the_pinata/utils/constants.dart';
 
 class PurchasesService {
+  static Future<bool> checkTrialElegibility() async {
+    Map<String, IntroEligibility> res =
+        await Purchases.checkTrialOrIntroductoryPriceEligibility(
+      [entitlementId, 'htp_199_1y'],
+    );
+    for (IntroEligibility eligibility in res.values) {
+      log('Eligibility: ${eligibility.status}, ${eligibility.description}');
+      if (eligibility.status ==
+          IntroEligibilityStatus.introEligibilityStatusEligible) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   static Future init(AppStateService appState) async {
     await Purchases.setLogLevel(LogLevel.debug);
 
@@ -22,13 +39,11 @@ class PurchasesService {
       );
     }
 
-    PurchasesConfiguration configuration;
-
-    configuration = PurchasesConfiguration(StoreConfig.instance.apiKey)
-      ..appUserID = null
-      ..observerMode = false;
-
-    await Purchases.configure(configuration);
+    await Purchases.configure(
+      PurchasesConfiguration(StoreConfig.instance.apiKey)
+        ..appUserID = null
+        ..observerMode = false,
+    );
 
     appState.updateUser(purchasesUserId: await Purchases.appUserID);
 
@@ -44,14 +59,30 @@ class PurchasesService {
     });
   }
 
-  static Future<Offering?> getOffering() async {
-    Offerings offerings = await Purchases.getOfferings();
-    Offering? current = offerings.current;
-    return current;
-  }
+  static Future<Offering?> getOffering() async =>
+      (await Purchases.getOfferings()).current;
 
-  static Future<Offerings> getOfferings() async =>
-      await Purchases.getOfferings();
+  static Future<void> setupAppleEmail() async {
+    if (Platform.isAndroid) return;
+    if (!await Purchases.isAnonymous) return;
+
+    AuthorizationCredentialAppleID credential =
+        await SignInWithApple.getAppleIDCredential(
+      scopes: AppleIDAuthorizationScopes.values,
+    );
+
+    if (credential.userIdentifier != null) {
+      await Purchases.logIn(credential.userIdentifier!);
+    }
+    if (credential.email != null) {
+      Map<String, String> fields = {'\$email': credential.email!};
+      String? displayName = credential.givenName;
+      if (displayName != null) {
+        fields['\$displayName'] = displayName;
+      }
+      await Purchases.setAttributes(fields);
+    }
+  }
 }
 
 class StoreConfig {
@@ -66,9 +97,7 @@ class StoreConfig {
   final String apiKey;
   static StoreConfig? _instance;
 
-  static StoreConfig get instance {
-    return _instance!;
-  }
+  static StoreConfig get instance => _instance!;
 
   static bool isForAppleStore() => instance.store == Store.appStore;
 

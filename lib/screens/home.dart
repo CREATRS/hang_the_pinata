@@ -34,6 +34,7 @@ class _HomeState extends State<Home> {
               GetBuilder<AppStateService>(
                 builder: (appState) {
                   return Switch(
+                    // TODO: Review on device dark mode
                     value: isDark,
                     onChanged: (bool value) async {
                       await appState.setDarkMode(value);
@@ -123,8 +124,8 @@ class _HomeState extends State<Home> {
                   }
                   setState(() {});
                   controller.success();
-                  await 300
-                      .milliseconds
+                  await 1
+                      .seconds
                       .delay(() => Get.toNamed(Routes.selectWordpack));
                   controller.reset();
                 },

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 import 'package:hang_the_pinata/backend/services/app_state.dart';
+import 'package:hang_the_pinata/backend/services/purchases.dart';
 import 'package:hang_the_pinata/utils/constants.dart';
 import 'package:hang_the_pinata/widgets/components/button.dart';
 
@@ -19,6 +20,27 @@ class PayWall extends StatefulWidget {
 }
 
 class _PayWallState extends State<PayWall> {
+  bool isTrialEligible = false;
+  Future<bool> checkPurchases(CustomerInfo customerInfo) async {
+    EntitlementInfo? entitlement = customerInfo.entitlements.all[entitlementId];
+    Get.find<AppStateService>().updateUser(
+      purchasesUserId: await Purchases.appUserID,
+      isPremium: entitlement?.isActive,
+    );
+    return entitlement?.isActive ?? false;
+  }
+
+  Future<void> checkTrialElegibility() async {
+    isTrialEligible = await PurchasesService.checkTrialElegibility();
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkTrialElegibility();
+  }
+
   @override
   Widget build(BuildContext context) {
     Package package = widget.offering.availablePackages.first;
@@ -26,8 +48,8 @@ class _PayWallState extends State<PayWall> {
     String getButtonText() {
       IntroductoryPrice? introductoryPrice =
           package.storeProduct.introductoryPrice;
-      if (introductoryPrice == null) {
-        return 'Purchase for ${package.storeProduct.priceString}';
+      if (introductoryPrice == null || !isTrialEligible) {
+        return 'Subscribe for ${package.storeProduct.priceString}';
       }
       double promoPrice = introductoryPrice.price;
       String period = introductoryPrice.periodUnit.name;
@@ -46,8 +68,8 @@ class _PayWallState extends State<PayWall> {
     }
 
     String getThenText() {
-      if (package.storeProduct.introductoryPrice == null) {
-        return '';
+      if (package.storeProduct.introductoryPrice == null || !isTrialEligible) {
+        return '\nBilled ${package.packageType.name}. Cancel anytime.\n';
       }
       return '\nThen just ${package.storeProduct.priceString}'
           ' ${package.packageType.name}\n';
@@ -86,35 +108,50 @@ class _PayWallState extends State<PayWall> {
                       ),
                     ),
                   ),
-                  Text(
-                    getThenText(),
-                    textAlign: TextAlign.center,
-                  ),
-                  GetBuilder<AppStateService>(
-                    builder: (appState) {
-                      return Button(
-                        text: getButtonText(),
-                        onPressed: () async {
-                          try {
-                            CustomerInfo customerInfo =
-                                await Purchases.purchasePackage(package);
-                            EntitlementInfo? entitlement =
-                                customerInfo.entitlements.all[entitlementId];
-                            appState.updateUser(
-                              purchasesUserId: await Purchases.appUserID,
-                              isPremium: entitlement?.isActive,
-                            );
-                          } on PlatformException catch (e) {
-                            log('Error purchasing: $e');
-                          }
-                          if (mounted) Navigator.pop(context);
-                        },
-                      );
+                  Text(getThenText(), textAlign: TextAlign.center),
+                  Button(
+                    text: getButtonText(),
+                    onPressed: () async {
+                      try {
+                        await PurchasesService.setupAppleEmail();
+
+                        CustomerInfo customerInfo =
+                            await Purchases.purchasePackage(package);
+                        await checkPurchases(customerInfo);
+                      } on PlatformException catch (e) {
+                        log('Error purchasing: $e');
+                      } finally {
+                        if (mounted) Navigator.pop(context);
+                      }
                     },
                   ),
                   TextButton(
                     child: const Text('Restore purchases'),
-                    onPressed: () {/* TODO */},
+                    onPressed: () async {
+                      await PurchasesService.setupAppleEmail();
+                      bool isPremium = await checkPurchases(
+                        await Purchases.getCustomerInfo(),
+                      );
+
+                      if (!isPremium) {
+                        try {
+                          CustomerInfo customerInfo =
+                              await Purchases.restorePurchases();
+                          isPremium = await checkPurchases(customerInfo);
+                        } on PlatformException catch (e) {
+                          log('Error restoring purchases: $e');
+                        }
+                      }
+                      if (isPremium) {
+                        Get.back();
+                      } else {
+                        Get.snackbar(
+                          'No purchases found',
+                          'No purchases found for this account',
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                      }
+                    },
                   ),
                 ],
               ),
