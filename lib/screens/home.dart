@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'package:hang_the_pinata/backend/models/language.dart';
 import 'package:hang_the_pinata/backend/models/user.dart';
@@ -23,6 +24,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   RoundedLoadingButtonController controller = RoundedLoadingButtonController();
   bool isDark = Get.isDarkMode;
+  bool showPrivacyPolicyButton = false;
 
   @override
   Widget build(BuildContext context) {
@@ -163,6 +165,28 @@ class _HomeState extends State<Home> {
                 },
               ),
               const Spacer(flex: 2),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  AnimatedSlide(
+                    duration: duration,
+                    offset: Offset(0, showPrivacyPolicyButton ? 0 : 2),
+                    child: TextButton(
+                      child: const Text('Privacy policy'),
+                      onPressed: () => launchUrlString(Urls.privacyPolicy),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        showPrivacyPolicyButton = !showPrivacyPolicyButton;
+                      });
+                    },
+                    icon: const Icon(Icons.info_outline),
+                  ),
+                  const SizedBox(width: 8, height: 72),
+                ],
+              ),
             ],
           );
         },

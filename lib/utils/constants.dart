@@ -17,6 +17,10 @@ class StorageKeys {
   static const String wordPacks = 'word_packs';
 }
 
+class Urls {
+  static const String privacyPolicy = 'https://macromedia.net/privacy-policy';
+}
+
 // Style
 class AppColors {
   static const Color orange = Color(0xFFD96818);
