@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
-import 'package:hang_the_pinata/backend/services/app_state.dart';
 import 'package:hang_the_pinata/backend/services/purchases.dart';
 import 'package:hang_the_pinata/utils/constants.dart';
 import 'package:hang_the_pinata/widgets/components/button.dart';
@@ -21,14 +20,6 @@ class PayWall extends StatefulWidget {
 
 class _PayWallState extends State<PayWall> {
   bool isTrialEligible = false;
-  Future<bool> checkPurchases(CustomerInfo customerInfo) async {
-    EntitlementInfo? entitlement = customerInfo.entitlements.all[entitlementId];
-    Get.find<AppStateService>().updateUser(
-      purchasesUserId: await Purchases.appUserID,
-      isPremium: entitlement?.isActive,
-    );
-    return entitlement?.isActive ?? false;
-  }
 
   Future<void> checkTrialElegibility() async {
     isTrialEligible = await PurchasesService.checkTrialElegibility();
@@ -120,7 +111,9 @@ class _PayWallState extends State<PayWall> {
                         if (succes) {
                           CustomerInfo customerInfo =
                               await Purchases.purchasePackage(package);
-                          await checkPurchases(customerInfo);
+                          await PurchasesService.checkPremiumStatus(
+                            customerInfo: customerInfo,
+                          );
                         }
                       } on PlatformException catch (e) {
                         log('Error purchasing: $e');
@@ -141,14 +134,17 @@ class _PayWallState extends State<PayWall> {
                         );
                         return;
                       }
-                      bool isPremium = await checkPurchases(
-                        await Purchases.getCustomerInfo(),
+                      bool isPremium =
+                          await PurchasesService.checkPremiumStatus(
+                        customerInfo: await Purchases.getCustomerInfo(),
                       );
                       if (!isPremium) {
                         try {
                           CustomerInfo customerInfo =
                               await Purchases.restorePurchases();
-                          isPremium = await checkPurchases(customerInfo);
+                          isPremium = await PurchasesService.checkPremiumStatus(
+                            customerInfo: customerInfo,
+                          );
                         } on PlatformException catch (e) {
                           log('Error restoring purchases: $e');
                         }

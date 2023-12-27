@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:get/get.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -9,6 +10,17 @@ import 'package:hang_the_pinata/backend/services/app_state.dart';
 import 'package:hang_the_pinata/utils/constants.dart';
 
 class PurchasesService {
+  static Future<bool> checkPremiumStatus({CustomerInfo? customerInfo}) async {
+    customerInfo ??= await Purchases.getCustomerInfo();
+
+    EntitlementInfo? entitlement = customerInfo.entitlements.all[entitlementId];
+    Get.find<AppStateService>().updateUser(
+      purchasesUserId: await Purchases.appUserID,
+      isPremium: entitlement?.isActive,
+    );
+    return entitlement?.isActive ?? false;
+  }
+
   static Future<bool> checkTrialElegibility() async {
     Map<String, IntroEligibility> res =
         await Purchases.checkTrialOrIntroductoryPriceEligibility(

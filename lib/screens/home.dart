@@ -97,6 +97,7 @@ class _HomeState extends State<Home> {
                     300.milliseconds.delay(() => controller.reset());
                     return;
                   }
+                  await PurchasesService.checkPremiumStatus();
                   if (!user.value.isPremium) {
                     try {
                       Offering? offerings =
