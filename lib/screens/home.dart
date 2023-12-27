@@ -182,9 +182,9 @@ class __SelectLanguagesState extends State<_SelectLanguages> {
         targetLanguage ??= appState.user.value.targetLanguage;
         return Container(
           padding: const EdgeInsets.all(16),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(16),
               topRight: Radius.circular(16),
             ),
