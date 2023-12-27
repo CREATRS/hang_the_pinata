@@ -2,22 +2,19 @@ import 'package:flutter/material.dart';
 
 import 'package:hang_the_pinata/utils/constants.dart';
 
+ButtonStyle _buttonStyle(Color color, double opacity) => ButtonStyle(
+      foregroundColor: MaterialStateProperty.all<Color>(color),
+      overlayColor: MaterialStateProperty.all<Color>(
+        AppColors.orange.withOpacity(opacity),
+      ),
+    );
+
 ThemeData darkTheme = ThemeData.dark().copyWith(
-  textButtonTheme: TextButtonThemeData(
-    style: ButtonStyle(
-      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-      overlayColor:
-          MaterialStateProperty.all<Color>(AppColors.orange.withOpacity(0.2)),
-    ),
-  ),
+  iconButtonTheme: IconButtonThemeData(style: _buttonStyle(Colors.white, .2)),
+  textButtonTheme: TextButtonThemeData(style: _buttonStyle(Colors.white, .2)),
 );
 
 ThemeData lightTheme = ThemeData(
-  textButtonTheme: TextButtonThemeData(
-    style: ButtonStyle(
-      foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-      overlayColor:
-          MaterialStateProperty.all<Color>(AppColors.orange.withOpacity(0.1)),
-    ),
-  ),
+  iconButtonTheme: IconButtonThemeData(style: _buttonStyle(Colors.black, .1)),
+  textButtonTheme: TextButtonThemeData(style: _buttonStyle(Colors.black, .1)),
 );
