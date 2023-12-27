@@ -54,7 +54,7 @@ class PurchasesService {
 
       appState.updateUser(
         purchasesUserId: await Purchases.appUserID,
-        isPremium: entitlement?.isActive,
+        isPremium: entitlement?.isActive ?? false,
       );
     });
   }
