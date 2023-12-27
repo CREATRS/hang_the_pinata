@@ -134,22 +134,22 @@ class _PayWallState extends State<PayWall> {
                         );
                         return;
                       }
-                      bool isPremium =
+                      PremiumStatus status =
                           await PurchasesService.checkPremiumStatus(
                         customerInfo: await Purchases.getCustomerInfo(),
                       );
-                      if (!isPremium) {
+                      if (status != PremiumStatus.active) {
                         try {
                           CustomerInfo customerInfo =
                               await Purchases.restorePurchases();
-                          isPremium = await PurchasesService.checkPremiumStatus(
+                          status = await PurchasesService.checkPremiumStatus(
                             customerInfo: customerInfo,
                           );
                         } on PlatformException catch (e) {
                           log('Error restoring purchases: $e');
                         }
                       }
-                      if (isPremium) {
+                      if (status == PremiumStatus.active) {
                         Get.back();
                       } else {
                         Get.snackbar(

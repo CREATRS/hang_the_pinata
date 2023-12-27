@@ -97,37 +97,56 @@ class _HomeState extends State<Home> {
                     300.milliseconds.delay(() => controller.reset());
                     return;
                   }
-                  await PurchasesService.checkPremiumStatus();
+                  PremiumStatus status =
+                      await PurchasesService.checkPremiumStatus();
                   if (!user.value.isPremium) {
-                    try {
-                      Offering? offerings =
-                          await PurchasesService.getOffering();
-                      if (offerings == null) {
-                        controller.error();
+                    if (status == PremiumStatus.oneWeekOffline) {
+                      Get.defaultDialog(
+                        title: '😢 Oops!',
+                        middleText: '\n🌎 We have gone more than a week '
+                            'without hearing from you!\n\n'
+                            '🛜 Please connect to internet '
+                            'to check your subscription status',
+                      );
+                    } else if (status == PremiumStatus.subscriptionEnded) {
+                      Get.defaultDialog(
+                        title: '😢 Oops!',
+                        middleText:
+                            '\n🚫 Looks like your subscription has ended.\n\n'
+                            '🛜 Please connect to internet '
+                            'to check your subscription status',
+                      );
+                    } else {
+                      try {
+                        Offering? offerings =
+                            await PurchasesService.getOffering();
+                        if (offerings == null) {
+                          controller.error();
+                          Get.snackbar(
+                            'Error',
+                            'There was an error connecting to the store. '
+                                'Please try again later.',
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                            snackPosition: SnackPosition.BOTTOM,
+                          );
+                          3.seconds.delay(() => controller.reset());
+                          return;
+                        }
+                        if (!mounted) return;
+                        await Get.bottomSheet(
+                          PayWall(offerings),
+                          isScrollControlled: true,
+                        );
+                      } on PlatformException catch (e) {
                         Get.snackbar(
-                          'Error',
-                          'There was an error connecting to the store. '
-                              'Please try again later.',
-                          backgroundColor: Colors.red,
-                          colorText: Colors.white,
+                          e.message ?? 'Error',
+                          e.details['underlyingErrorMessage'] ??
+                              'Error getting offerings',
+                          duration: 10.seconds,
                           snackPosition: SnackPosition.BOTTOM,
                         );
-                        3.seconds.delay(() => controller.reset());
-                        return;
                       }
-                      if (!mounted) return;
-                      await Get.bottomSheet(
-                        PayWall(offerings),
-                        isScrollControlled: true,
-                      );
-                    } on PlatformException catch (e) {
-                      Get.snackbar(
-                        e.message ?? 'Error',
-                        e.details['underlyingErrorMessage'] ??
-                            'Error getting offerings',
-                        duration: 10.seconds,
-                        snackPosition: SnackPosition.BOTTOM,
-                      );
                     }
                   }
                   if (!user.value.isPremium) {

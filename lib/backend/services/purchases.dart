@@ -9,16 +9,45 @@ import 'package:hang_the_pinata/backend/secrets.dart';
 import 'package:hang_the_pinata/backend/services/app_state.dart';
 import 'package:hang_the_pinata/utils/constants.dart';
 
+enum PremiumStatus {
+  active,
+  oneWeekOffline,
+  none,
+  subscriptionEnded,
+}
+
 class PurchasesService {
-  static Future<bool> checkPremiumStatus({CustomerInfo? customerInfo}) async {
+  static Future<PremiumStatus> checkPremiumStatus({
+    CustomerInfo? customerInfo,
+  }) async {
+    AppStateService appState = Get.find<AppStateService>();
     customerInfo ??= await Purchases.getCustomerInfo();
+    PremiumStatus? status;
+
+    String? expirationDate =
+        customerInfo.entitlements.all[entitlementId]?.expirationDate;
+    DateTime now = DateTime.now().toUtc();
+    if (expirationDate != null) {
+      if (DateTime.parse(expirationDate).isBefore(now)) {
+        status = PremiumStatus.subscriptionEnded;
+      }
+    }
+    DateTime requestDate = DateTime.parse(customerInfo.requestDate);
+    if (status == null &&
+        requestDate.add(const Duration(days: 7)).isBefore(now)) {
+      status = PremiumStatus.oneWeekOffline;
+    }
 
     EntitlementInfo? entitlement = customerInfo.entitlements.all[entitlementId];
-    Get.find<AppStateService>().updateUser(
+    status ??= (entitlement?.isActive ?? false)
+        ? PremiumStatus.active
+        : PremiumStatus.none;
+
+    appState.updateUser(
       purchasesUserId: await Purchases.appUserID,
-      isPremium: entitlement?.isActive,
+      isPremium: status == PremiumStatus.active,
     );
-    return entitlement?.isActive ?? false;
+    return status;
   }
 
   static Future<bool> checkTrialElegibility() async {
