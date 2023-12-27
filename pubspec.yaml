@@ -2,7 +2,7 @@ name: hang_the_pinata
 description: "This Flutter-based educational app transforms the classic hangman game into an engaging platform for mastering words in distinct languages."
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 1.0.0+3
 
 environment:
   sdk: '>=3.2.3 <4.0.0'

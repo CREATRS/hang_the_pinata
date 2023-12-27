@@ -60,7 +60,10 @@ class _PayWallState extends State<PayWall> {
         text += '$periodUnit ${period.toLowerCase()} trial for ';
       }
       if (promoPrice == 0) {
-        text += 'free ${period.toLowerCase()}';
+        text += 'free ';
+        if (periodUnit <= 1) {
+          text += period.toLowerCase();
+        }
       } else {
         text += '\$$promoPrice ';
       }
@@ -112,27 +115,35 @@ class _PayWallState extends State<PayWall> {
                   Button(
                     text: getButtonText(),
                     onPressed: () async {
+                      bool succes = await PurchasesService.setupEmail();
                       try {
-                        await PurchasesService.setupAppleEmail();
-
-                        CustomerInfo customerInfo =
-                            await Purchases.purchasePackage(package);
-                        await checkPurchases(customerInfo);
+                        if (succes) {
+                          CustomerInfo customerInfo =
+                              await Purchases.purchasePackage(package);
+                          await checkPurchases(customerInfo);
+                        }
                       } on PlatformException catch (e) {
                         log('Error purchasing: $e');
-                      } finally {
-                        if (mounted) Navigator.pop(context);
                       }
+                      if (mounted) Navigator.pop(context);
                     },
                   ),
                   TextButton(
                     child: const Text('Restore purchases'),
                     onPressed: () async {
-                      await PurchasesService.setupAppleEmail();
+                      bool success = await PurchasesService.setupEmail();
+                      if (!success) {
+                        Get.snackbar(
+                          'Error',
+                          'Please sign in with the same account '
+                              'you used to purchase',
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                        return;
+                      }
                       bool isPremium = await checkPurchases(
                         await Purchases.getCustomerInfo(),
                       );
-
                       if (!isPremium) {
                         try {
                           CustomerInfo customerInfo =

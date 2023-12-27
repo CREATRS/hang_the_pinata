@@ -62,26 +62,31 @@ class PurchasesService {
   static Future<Offering?> getOffering() async =>
       (await Purchases.getOfferings()).current;
 
-  static Future<void> setupAppleEmail() async {
-    if (Platform.isAndroid) return;
-    if (!await Purchases.isAnonymous) return;
+  static Future<bool> setupEmail() async {
+    if (await Purchases.isAnonymous && (Platform.isIOS || Platform.isMacOS)) {
+      try {
+        AuthorizationCredentialAppleID credential =
+            await SignInWithApple.getAppleIDCredential(
+          scopes: AppleIDAuthorizationScopes.values,
+        );
 
-    AuthorizationCredentialAppleID credential =
-        await SignInWithApple.getAppleIDCredential(
-      scopes: AppleIDAuthorizationScopes.values,
-    );
-
-    if (credential.userIdentifier != null) {
-      await Purchases.logIn(credential.userIdentifier!);
-    }
-    if (credential.email != null) {
-      Map<String, String> fields = {'\$email': credential.email!};
-      String? displayName = credential.givenName;
-      if (displayName != null) {
-        fields['\$displayName'] = displayName;
+        if (credential.userIdentifier != null) {
+          await Purchases.logIn(credential.userIdentifier!);
+        }
+        if (credential.email != null) {
+          Map<String, String> fields = {'\$email': credential.email!};
+          String? displayName = credential.givenName;
+          if (displayName != null) {
+            fields['\$displayName'] = displayName;
+          }
+          await Purchases.setAttributes(fields);
+        }
+        return true;
+      } on SignInWithAppleAuthorizationException catch (_) {
+        return false;
       }
-      await Purchases.setAttributes(fields);
     }
+    return true;
   }
 }
 

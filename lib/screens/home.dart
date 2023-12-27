@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -97,25 +98,36 @@ class _HomeState extends State<Home> {
                     return;
                   }
                   if (!user.value.isPremium) {
-                    Offering? offerings = await PurchasesService.getOffering();
-                    if (offerings == null) {
-                      controller.error();
+                    try {
+                      Offering? offerings =
+                          await PurchasesService.getOffering();
+                      if (offerings == null) {
+                        controller.error();
+                        Get.snackbar(
+                          'Error',
+                          'There was an error connecting to the store. '
+                              'Please try again later.',
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                        3.seconds.delay(() => controller.reset());
+                        return;
+                      }
+                      if (!mounted) return;
+                      await Get.bottomSheet(
+                        PayWall(offerings),
+                        isScrollControlled: true,
+                      );
+                    } on PlatformException catch (e) {
                       Get.snackbar(
-                        'Error',
-                        'There was an error connecting to the store. '
-                            'Please try again later.',
-                        backgroundColor: Colors.red,
-                        colorText: Colors.white,
+                        e.message ?? 'Error',
+                        e.details['underlyingErrorMessage'] ??
+                            'Error getting offerings',
+                        duration: 10.seconds,
                         snackPosition: SnackPosition.BOTTOM,
                       );
-                      3.seconds.delay(() => controller.reset());
-                      return;
                     }
-                    if (!mounted) return;
-                    await Get.bottomSheet(
-                      PayWall(offerings),
-                      isScrollControlled: true,
-                    );
                   }
                   if (!user.value.isPremium) {
                     controller.error();
