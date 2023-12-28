@@ -27,12 +27,13 @@ class PurchasesService {
     String? expirationDate =
         customerInfo.entitlements.all[entitlementId]?.expirationDate;
     DateTime now = DateTime.now().toUtc();
-    if (expirationDate != null) {
+    DateTime requestDate = DateTime.parse(customerInfo.requestDate);
+    if (expirationDate != null &&
+        requestDate.add(const Duration(hours: 1)).isBefore(now)) {
       if (DateTime.parse(expirationDate).isBefore(now)) {
         status = PremiumStatus.subscriptionEnded;
       }
     }
-    DateTime requestDate = DateTime.parse(customerInfo.requestDate);
     if (status == null &&
         requestDate.add(const Duration(days: 7)).isBefore(now)) {
       status = PremiumStatus.oneWeekOffline;
