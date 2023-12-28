@@ -35,6 +35,7 @@ class _PayWallState extends State<PayWall> {
   @override
   Widget build(BuildContext context) {
     Package package = widget.offering.availablePackages.first;
+    Size size = MediaQuery.of(context).size;
 
     String getButtonText() {
       IntroductoryPrice? introductoryPrice =
@@ -71,97 +72,93 @@ class _PayWallState extends State<PayWall> {
 
     return Container(
       clipBehavior: Clip.antiAlias,
-      height: MediaQuery.of(context).size.height * .9,
+      height: size.height * .9,
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0)),
       ),
       child: Stack(
         children: [
-          Positioned(
-            top: MediaQuery.of(context).size.height * .4,
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * .5,
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(16, 72, 16, 23),
-                children: [
-                  Text(
-                    widget.offering.metadata['title']?.toString() ??
-                        'Improve your learning!',
-                    style: TextStyles.h1,
-                    textAlign: TextAlign.center,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 32, bottom: 16),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        widget.offering.serverDescription,
-                        textAlign: TextAlign.center,
-                      ),
+          Padding(
+            padding: EdgeInsets.only(top: size.height * .4),
+            child: ListView(
+              padding: EdgeInsets.only(top: size.height * .1),
+              children: [
+                Text(
+                  widget.offering.metadata['title']?.toString() ??
+                      'Improve your learning!',
+                  style: TextStyles.h1,
+                  textAlign: TextAlign.center,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 32, bottom: 16),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      widget.offering.serverDescription,
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                  Text(getThenText(), textAlign: TextAlign.center),
-                  Button(
-                    text: getButtonText(),
-                    onPressed: () async {
-                      bool succes = await PurchasesService.setupEmail();
-                      try {
-                        if (succes) {
-                          CustomerInfo customerInfo =
-                              await Purchases.purchasePackage(package);
-                          await PurchasesService.checkPremiumStatus(
-                            customerInfo: customerInfo,
-                          );
-                        }
-                      } on PlatformException catch (e) {
-                        log('Error purchasing: $e');
-                      }
-                      if (mounted) Navigator.pop(context);
-                    },
-                  ),
-                  TextButton(
-                    child: const Text('Restore purchases'),
-                    onPressed: () async {
-                      bool success = await PurchasesService.setupEmail();
-                      if (!success) {
-                        Get.snackbar(
-                          'Error',
-                          'Please sign in with the same account '
-                              'you used to purchase',
-                          snackPosition: SnackPosition.BOTTOM,
+                ),
+                Text(getThenText(), textAlign: TextAlign.center),
+                Button(
+                  text: getButtonText(),
+                  onPressed: () async {
+                    bool succes = await PurchasesService.setupEmail();
+                    try {
+                      if (succes) {
+                        CustomerInfo customerInfo =
+                            await Purchases.purchasePackage(package);
+                        await PurchasesService.checkPremiumStatus(
+                          customerInfo: customerInfo,
                         );
-                        return;
                       }
-                      PremiumStatus status =
-                          await PurchasesService.checkPremiumStatus(
-                        customerInfo: await Purchases.getCustomerInfo(),
+                    } on PlatformException catch (e) {
+                      log('Error purchasing: $e');
+                    }
+                    if (mounted) Navigator.pop(context);
+                  },
+                ),
+                TextButton(
+                  child: const Text('Restore purchases'),
+                  onPressed: () async {
+                    bool success = await PurchasesService.setupEmail();
+                    if (!success) {
+                      Get.snackbar(
+                        'Error',
+                        'Please sign in with the same account '
+                            'you used to purchase',
+                        snackPosition: SnackPosition.BOTTOM,
                       );
-                      if (status != PremiumStatus.active) {
-                        try {
-                          CustomerInfo customerInfo =
-                              await Purchases.restorePurchases();
-                          status = await PurchasesService.checkPremiumStatus(
-                            customerInfo: customerInfo,
-                          );
-                        } on PlatformException catch (e) {
-                          log('Error restoring purchases: $e');
-                        }
-                      }
-                      if (status == PremiumStatus.active) {
-                        Get.back();
-                      } else {
-                        Get.snackbar(
-                          'No purchases found',
-                          'No purchases found for this account',
-                          snackPosition: SnackPosition.BOTTOM,
+                      return;
+                    }
+                    PremiumStatus status =
+                        await PurchasesService.checkPremiumStatus(
+                      customerInfo: await Purchases.getCustomerInfo(),
+                    );
+                    if (status != PremiumStatus.active) {
+                      try {
+                        CustomerInfo customerInfo =
+                            await Purchases.restorePurchases();
+                        status = await PurchasesService.checkPremiumStatus(
+                          customerInfo: customerInfo,
                         );
+                      } on PlatformException catch (e) {
+                        log('Error restoring purchases: $e');
                       }
-                    },
-                  ),
-                ],
-              ),
+                    }
+                    if (status == PremiumStatus.active) {
+                      Get.back();
+                    } else {
+                      Get.snackbar(
+                        'No purchases found',
+                        'No purchases found for this account',
+                        snackPosition: SnackPosition.BOTTOM,
+                      );
+                    }
+                  },
+                ),
+              ],
             ),
           ),
           ClipPath(

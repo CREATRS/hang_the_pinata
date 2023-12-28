@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:lottie/lottie.dart';
@@ -26,10 +28,12 @@ class _HangManState extends State<HangMan> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Lottie.asset(
       'assets/animations/hangman.json',
       alignment: Alignment.center,
       fit: BoxFit.contain,
+      height: min(size.width, size.height * 0.438),
       controller: widget.controller.animationController,
     );
   }
