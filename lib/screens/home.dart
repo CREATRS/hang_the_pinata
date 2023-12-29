@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'package:hang_the_pinata/backend/models/language.dart';
 import 'package:hang_the_pinata/backend/models/user.dart';
 import 'package:hang_the_pinata/backend/services/app_state.dart';
+import 'package:hang_the_pinata/backend/services/purchases.dart';
 import 'package:hang_the_pinata/utils/constants.dart';
 import 'package:hang_the_pinata/widgets/components/button.dart';
 import 'package:hang_the_pinata/widgets/components/logo.dart';
+import 'package:hang_the_pinata/widgets/modules/paywall.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -18,10 +23,33 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   RoundedLoadingButtonController controller = RoundedLoadingButtonController();
+  bool isDark = Get.isDarkMode;
+  bool showPrivacyPolicyButton = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          Row(
+            children: [
+              const Icon(Icons.dark_mode_rounded),
+              GetBuilder<AppStateService>(
+                builder: (appState) {
+                  return Switch(
+                    // TODO: Review on device dark mode
+                    value: isDark,
+                    onChanged: (bool value) async {
+                      await appState.setDarkMode(value);
+                      setState(() => isDark = value);
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
       body: GetBuilder<AppStateService>(
         builder: (appstate) {
           Rx<User> user = appstate.user;
@@ -71,15 +99,94 @@ class _HomeState extends State<Home> {
                     300.milliseconds.delay(() => controller.reset());
                     return;
                   }
+                  PremiumStatus status =
+                      await PurchasesService.checkPremiumStatus();
+                  if (!user.value.isPremium) {
+                    if (status == PremiumStatus.oneWeekOffline) {
+                      Get.defaultDialog(
+                        title: '😢 Oops!',
+                        middleText: '\n🌎 We have gone more than a week '
+                            'without hearing from you!\n\n'
+                            '🛜 Please connect to internet '
+                            'to check your subscription status',
+                      );
+                    } else if (status == PremiumStatus.subscriptionEnded) {
+                      Get.defaultDialog(
+                        title: '😢 Oops!',
+                        middleText:
+                            '\n🚫 Looks like your subscription has ended.\n\n'
+                            '🛜 Please connect to internet '
+                            'to check your subscription status',
+                      );
+                    } else {
+                      try {
+                        Offering? offerings =
+                            await PurchasesService.getOffering();
+                        if (offerings == null) {
+                          controller.error();
+                          Get.snackbar(
+                            'Error',
+                            'There was an error connecting to the store. '
+                                'Please try again later.',
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                            snackPosition: SnackPosition.BOTTOM,
+                          );
+                          3.seconds.delay(() => controller.reset());
+                          return;
+                        }
+                        if (!mounted) return;
+                        await Get.bottomSheet(
+                          PayWall(offerings),
+                          isScrollControlled: true,
+                        );
+                      } on PlatformException catch (e) {
+                        Get.snackbar(
+                          e.message ?? 'Error',
+                          e.details['underlyingErrorMessage'] ??
+                              'Error getting offerings',
+                          duration: 10.seconds,
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                      }
+                    }
+                  }
+                  if (!user.value.isPremium) {
+                    controller.error();
+                    1.seconds.delay(() => controller.reset());
+                    return;
+                  }
                   setState(() {});
                   controller.success();
-                  await 300
-                      .milliseconds
+                  await 1
+                      .seconds
                       .delay(() => Get.toNamed(Routes.selectWordpack));
                   controller.reset();
                 },
               ),
               const Spacer(flex: 2),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  AnimatedSlide(
+                    duration: duration,
+                    offset: Offset(0, showPrivacyPolicyButton ? 0 : 2),
+                    child: TextButton(
+                      child: const Text('Privacy policy'),
+                      onPressed: () => launchUrlString(Urls.privacyPolicy),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        showPrivacyPolicyButton = !showPrivacyPolicyButton;
+                      });
+                    },
+                    icon: const Icon(Icons.info_outline),
+                  ),
+                  const SizedBox(width: 8, height: 72),
+                ],
+              ),
             ],
           );
         },
@@ -131,9 +238,9 @@ class __SelectLanguagesState extends State<_SelectLanguages> {
         targetLanguage ??= appState.user.value.targetLanguage;
         return Container(
           padding: const EdgeInsets.all(16),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(16),
               topRight: Radius.circular(16),
             ),
@@ -174,12 +281,10 @@ class __SelectLanguagesState extends State<_SelectLanguages> {
               GetBuilder<AppStateService>(
                 builder: (appState) {
                   return Button(
-                    onPressed: () {
-                      appState.updateUser(
-                        appState.user.value.copyWith(
-                          sourceLanguage: sourceLanguage,
-                          targetLanguage: targetLanguage,
-                        ),
+                    onPressed: () async {
+                      await appState.updateUser(
+                        sourceLanguage: sourceLanguage,
+                        targetLanguage: targetLanguage,
                       );
                       Get.back();
                     },

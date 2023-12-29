@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 // Backend
+const String entitlementId = 'premium';
+
 class Routes {
   static const String game = '/game';
   static const String home = '/';
@@ -10,8 +12,13 @@ class Routes {
 
 class StorageKeys {
   static const String box = 'hang_the_pinata';
+  static const String darkMode = 'dark_mode';
   static const String user = 'user';
   static const String wordPacks = 'word_packs';
+}
+
+class Urls {
+  static const String privacyPolicy = 'https://macromedia.net/privacy-policy';
 }
 
 // Style

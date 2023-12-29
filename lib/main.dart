@@ -4,13 +4,20 @@ import 'package:get/get.dart';
 
 import 'package:hang_the_pinata/screens/select_wordpack.dart';
 import 'backend/services/app_state.dart';
+import 'backend/services/purchases.dart';
 import 'screens/hangman_game.dart';
 import 'screens/home.dart';
 import 'utils/constants.dart';
 
 void main() async {
   Get.isLogEnable = false;
-  Get.put(AppStateService());
+  AppStateService appState = AppStateService();
+  await appState.init();
+  Get.put(appState);
+  await PurchasesService.init(appState);
+
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 

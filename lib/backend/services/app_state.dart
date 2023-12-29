@@ -5,11 +5,14 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:hang_the_pinata/backend/models/user.dart';
 import 'package:hang_the_pinata/utils/constants.dart';
+import 'package:hang_the_pinata/utils/themes.dart';
 
 class AppStateService extends GetxController {
   // Init state
-  AppStateService() {
-    _loadStorage().then((_) => _loadUser());
+  Future<void> init() async {
+    await _loadStorage();
+    _loadUser();
+    setDarkMode(box.get(StorageKeys.darkMode) ?? false);
   }
 
   // Values
@@ -23,7 +26,7 @@ class AppStateService extends GetxController {
     box = await Hive.openBox(StorageKeys.box);
   }
 
-  void _loadUser() async {
+  void _loadUser() {
     Map? userData = box.get(StorageKeys.user);
     if (userData != null) {
       try {
@@ -38,8 +41,25 @@ class AppStateService extends GetxController {
     }
   }
 
-  void updateUser(User newUser) {
-    user.value = newUser;
-    box.put(StorageKeys.user, newUser.toJson());
+  Future<void> setDarkMode(bool value) async {
+    Get.changeTheme(value ? darkTheme : lightTheme);
+    await box.put(StorageKeys.darkMode, value);
+  }
+
+  Future<void> updateUser({
+    String? sourceLanguage,
+    String? targetLanguage,
+    int? bestScore,
+    String? purchasesUserId,
+    bool? isPremium,
+  }) async {
+    user.value = user.value.copyWith(
+      sourceLanguage: sourceLanguage,
+      targetLanguage: targetLanguage,
+      bestScore: bestScore,
+      purchasesUserId: purchasesUserId,
+      isPremium: isPremium,
+    );
+    await box.put(StorageKeys.user, user.value.toJson());
   }
 }

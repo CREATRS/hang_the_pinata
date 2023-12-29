@@ -1,4 +1,4 @@
-package com.example.hang_the_pinata
+package com.merlix.hangThePinata
 
 import io.flutter.embedding.android.FlutterActivity
 

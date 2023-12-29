@@ -46,6 +46,10 @@ class _HangmanGameState extends State<HangmanGame> {
 
   @override
   Widget build(BuildContext context) {
+    Size buttonSize = Size(
+      MediaQuery.of(context).size.width / 10,
+      MediaQuery.of(context).size.height * .07,
+    );
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -166,15 +170,15 @@ class _HangmanGameState extends State<HangmanGame> {
                                     confettiController: confettiController,
                                     enableLongPress:
                                         specialCharacters.isNotEmpty,
+                                    buttonSize: buttonSize,
                                   )
                                 : AnimatedContainer(
                                     duration: duration,
-                                    width: MediaQuery.of(context).size.width /
-                                        10 *
+                                    width: buttonSize.width *
                                         (showAccents == character
                                             ? specialCharacters.length + 1
                                             : 1),
-                                    height: 52,
+                                    height: buttonSize.height,
                                     child: Stack(
                                       children: [
                                         ...specialCharacters.map((accent) {
@@ -182,7 +186,7 @@ class _HangmanGameState extends State<HangmanGame> {
                                               specialCharacters.indexOf(accent);
                                           return AnimatedPositioned(
                                             left: showAccents == character
-                                                ? (index + 1) * 40
+                                                ? (index + 1) * buttonSize.width
                                                 : 0,
                                             curve: Curves.easeInOut,
                                             duration: duration,
@@ -194,6 +198,7 @@ class _HangmanGameState extends State<HangmanGame> {
                                                   showAccents == character
                                                       ? 2
                                                       : 0,
+                                              buttonSize: buttonSize,
                                             ),
                                           );
                                         }),
@@ -204,6 +209,7 @@ class _HangmanGameState extends State<HangmanGame> {
                                               confettiController,
                                           enableLongPress:
                                               specialCharacters.isNotEmpty,
+                                          buttonSize: buttonSize,
                                         ),
                                       ],
                                     ),
@@ -221,7 +227,7 @@ class _HangmanGameState extends State<HangmanGame> {
           // Score and button
           AnimatedSlide(
             duration: 1.seconds,
-            offset: controller.win != null ? Offset.zero : const Offset(0, 2),
+            offset: controller.win != null ? Offset.zero : const Offset(0, 3),
             child: controller.win != null && controller.win! ||
                     controller.win == null && controller.score > 0
                 ? Padding(
@@ -279,14 +285,15 @@ class _HangmanGameState extends State<HangmanGame> {
     bool enableLongPress = false,
     ConfettiController? confettiController,
     double elevation = 2,
+    required Size buttonSize,
   }) {
     bool isPressed = controller.attempts.contains(character);
     bool hasChildToPress = !specialCharacters.every(
       (element) => controller.attempts.contains(element),
     );
     return Container(
-      width: MediaQuery.of(context).size.width / 10,
-      height: 52,
+      width: buttonSize.width,
+      height: buttonSize.height,
       padding: const EdgeInsets.all(2),
       child: RawMaterialButton(
         onPressed: controller.isReady
@@ -316,10 +323,9 @@ class _HangmanGameState extends State<HangmanGame> {
                               confettiControllers
                                   .forEach((_, value) => value.play());
                               if (controller.score > user.bestScore) {
-                                user = user.copyWith(
+                                appState.updateUser(
                                   bestScore: controller.score,
                                 );
-                                appState.updateUser(user);
                                 Get.snackbar(
                                   'New high score!',
                                   'You scored ${controller.score} points!',
@@ -355,6 +361,7 @@ class _HangmanGameState extends State<HangmanGame> {
             Text(
               character,
               style: TextStyle(
+                fontSize: buttonSize.width * .3,
                 color: isPressed
                     ? controller.currentWord.contains(character)
                         ? Colors.green
