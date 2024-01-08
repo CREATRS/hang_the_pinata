@@ -5,7 +5,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:hang_the_pinata/backend/models/user.dart';
 import 'package:hang_the_pinata/utils/constants.dart';
-import 'package:hang_the_pinata/utils/themes.dart';
 
 class AppStateService extends GetxController {
   // Init state
@@ -16,6 +15,7 @@ class AppStateService extends GetxController {
   }
 
   // Values
+  RxBool darkMode = false.obs;
   Rx<User> user = Rx<User>(const User());
 
   late Box box;
@@ -24,6 +24,7 @@ class AppStateService extends GetxController {
   Future<void> _loadStorage() async {
     await Hive.initFlutter();
     box = await Hive.openBox(StorageKeys.box);
+    await setDarkMode(box.get(StorageKeys.darkMode));
   }
 
   void _loadUser() {
@@ -41,9 +42,12 @@ class AppStateService extends GetxController {
     }
   }
 
-  Future<void> setDarkMode(bool value) async {
-    Get.changeTheme(value ? darkTheme : lightTheme);
+  Future<void> setDarkMode(bool? value) async {
+    if (value == null) return;
+
+    darkMode.value = value;
     await box.put(StorageKeys.darkMode, value);
+    update();
   }
 
   Future<void> updateUser({

@@ -33,7 +33,7 @@ class _HangManState extends State<HangMan> with SingleTickerProviderStateMixin {
       'assets/animations/hangman.json',
       alignment: Alignment.center,
       fit: BoxFit.contain,
-      height: min(size.width, size.height * 0.438),
+      height: min(size.width, size.height * 0.35),
       controller: widget.controller.animationController,
     );
   }

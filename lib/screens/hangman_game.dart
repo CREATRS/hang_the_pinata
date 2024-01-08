@@ -102,7 +102,7 @@ class _HangmanGameState extends State<HangmanGame> {
 
           // Word
           Padding(
-            padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Text(
               controller.currentWord
                   .split('')
@@ -291,6 +291,7 @@ class _HangmanGameState extends State<HangmanGame> {
     bool hasChildToPress = !specialCharacters.every(
       (element) => controller.attempts.contains(element),
     );
+    bool dark = appState.darkMode.value;
     return Container(
       width: buttonSize.width,
       height: buttonSize.height,
@@ -352,7 +353,13 @@ class _HangmanGameState extends State<HangmanGame> {
         onLongPress: controller.isReady && enableLongPress && !isPressed
             ? () => setState(() => showAccents = character)
             : null,
-        fillColor: isPressed ? Colors.grey.shade300 : Colors.grey.shade100,
+        fillColor: isPressed
+            ? dark
+                ? Colors.grey.shade800
+                : Colors.grey.shade300
+            : dark
+                ? Colors.grey.shade900
+                : Colors.grey.shade100,
         elevation: elevation,
         shape: const CircleBorder(),
         child: Stack(
@@ -373,7 +380,7 @@ class _HangmanGameState extends State<HangmanGame> {
               const Positioned(
                 bottom: 0,
                 right: 0,
-                width: 5,
+                width: 1,
                 height: 10,
                 child: Icon(Icons.arrow_drop_down, size: 16),
               ),
