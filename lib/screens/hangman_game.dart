@@ -380,7 +380,7 @@ class _HangmanGameState extends State<HangmanGame> {
               const Positioned(
                 bottom: 0,
                 right: 0,
-                width: 5,
+                width: 1,
                 height: 10,
                 child: Icon(Icons.arrow_drop_down, size: 16),
               ),
