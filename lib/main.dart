@@ -8,6 +8,7 @@ import 'backend/services/purchases.dart';
 import 'screens/hangman_game.dart';
 import 'screens/home.dart';
 import 'utils/constants.dart';
+import 'utils/themes.dart';
 
 void main() async {
   Get.isLogEnable = false;
@@ -26,11 +27,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const GetMaterialApp(
-      title: 'Hang the Piñata',
-      debugShowCheckedModeBanner: false,
-      enableLog: false,
-      onGenerateRoute: _router,
+    return GetBuilder<AppStateService>(
+      builder: (appState) {
+        return GetMaterialApp(
+          title: 'Hang the Piñata',
+          debugShowCheckedModeBanner: false,
+          enableLog: false,
+          onGenerateRoute: _router,
+          theme: appState.darkMode.value ? darkTheme : lightTheme,
+        );
+      },
     );
   }
 }
