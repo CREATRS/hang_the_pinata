@@ -18,7 +18,8 @@ class StorageKeys {
 }
 
 class Urls {
-  static const String privacyPolicy = 'https://macromedia.net/privacy-policy';
+  static const String privacyPolicy = 'https://macromedia.net/hang-the-pinata-privacy-policy';
+  static const String termsOfUse = 'https://macromedia.net/hang-the-pinata-terms-of-use ';
 }
 
 // Style

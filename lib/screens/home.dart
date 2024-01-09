@@ -171,9 +171,17 @@ class _HomeState extends State<Home> {
                   AnimatedSlide(
                     duration: duration,
                     offset: Offset(0, showPrivacyPolicyButton ? 0 : 2),
-                    child: TextButton(
-                      child: const Text('Privacy policy'),
-                      onPressed: () => launchUrlString(Urls.privacyPolicy),
+                    child: Row(
+                      children: [
+                        TextButton(
+                          child: const Text('Privacy policy'),
+                          onPressed: () => launchUrlString(Urls.privacyPolicy),
+                        ),
+                        TextButton(
+                          child: const Text('Terms of use'),
+                          onPressed: () => launchUrlString(Urls.termsOfUse),
+                        ),
+                      ],
                     ),
                   ),
                   IconButton(
